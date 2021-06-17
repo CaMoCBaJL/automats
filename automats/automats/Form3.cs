@@ -59,25 +59,32 @@ namespace automats
 
         void DrawConsistentConnection(Graphics g, List<Label> currentGroup, List<Label> previousGroup, int offsetX)
         {
-            var center = Operations.GetCentralPoint(previousGroup);
+            var prevGroupCenter = Operations.GetCentralPoint(previousGroup);
 
-            if (currentGroup.Count == 1)
-            {
+            var curGroupCenter = Operations.GetCentralPoint(currentGroup);
 
-                g.DrawLine(Pens.Black, center,
-                    new Point(currentGroup[0].Location.X + offsetX, center.Y));
+            if (currentGroup.Count == 1 && previousGroup.Count == 1)
+                g.DrawLine(Pens.Black,
+                    new Point(currentGroup[0].Location.X,
+                    currentGroup[0].Location.Y + currentGroup[0].Height / 2),
 
-                g.DrawLine(Pens.Black, new Point(currentGroup[0].Location.X + offsetX, center.Y),
-                    new Point(currentGroup[0].Location.X, currentGroup[0].Location.Y 
+                    new Point(previousGroup[0].Location.X + previousGroup[0].Width - 5,
+                    previousGroup[0].Location.Y + previousGroup[0].Height / 2));
+
+            else if (currentGroup.Count == 1 && previousGroup.Count > 1)
+                    g.DrawLine(Pens.Black, prevGroupCenter,
+                    new Point(currentGroup[0].Location.X, currentGroup[0].Location.Y
                     + currentGroup[0].Height / 2));
+            
+            else if (currentGroup.Count > 0 && previousGroup.Count == 1)
+            { 
+                g.DrawLine(Pens.Black,
+                    new Point(currentGroup[0].Location.X + offsetX , curGroupCenter.Y),
+                    new Point(previousGroup[0].Location.X + previousGroup[0].Width,
+                    previousGroup[0].Location.Y + previousGroup[0].Height / 2));
             }
             else
-            {
-                var center2 = Operations.GetCentralPoint(currentGroup);
-
-                g.DrawLine(Pens.Black, center, new Point(center2.X - labelWidth - 2 * offset, center2.Y));
-            }
-
+                g.DrawLine(Pens.Black, prevGroupCenter, new Point(curGroupCenter.X - labelWidth - 2 * offset, curGroupCenter.Y));
         }
 
         void DrawPrallelConnection(Graphics g, List<Label> labels, int offsetX)
