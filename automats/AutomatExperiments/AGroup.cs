@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AutomatTest
+namespace AutomatExperiments
 {
-    class AGroup
+    public class AGroup
     {
         public List<SigmaSet> AGroupContent { get; }
 
@@ -63,10 +63,35 @@ namespace AutomatTest
 
         public static bool IsGroupHomogenous(AGroup group) => group.AGroupContent.TrueForAll((sigmaSet)
                 => sigmaSet.SetContent.Values.Last().TrueForAll(
-                    (value) => value == group.AGroupContent[0].SetContent.Values.ElementAt(0)[0]));
-            //return group.AGroupContent.TrueForAll((sigmaSet) => 
-            //sigmaSet.SetType == AGroupAndSigmaSetType.Homogenous 
-            //|| (sigmaSet.SetContent.Values.Count == 1 && sigmaSet.SetContent)
-        
+                    (value) => value == group.AGroupContent[0].SetContent.Values.ElementAt(0)[0])) || group.AGroupType == AGroupAndSigmaSetType.Prime;
+
+        public override string ToString()
+        {
+            StringBuilder result = new StringBuilder();
+
+            foreach (var sigmaSet in AGroupContent)
+            {
+                foreach (var key in sigmaSet.SetContent.Keys)
+                {
+                    result.Append('{');
+
+                    for (int i = 0; i < sigmaSet.SetContent[key].Count; i++)
+                    {
+                        if (i > 0)
+                            result.Append(", ");
+
+                        result.Append(sigmaSet.SetContent[key][i]);
+                    }
+
+                    result.Append('}');
+                }
+
+                if (AGroupContent.IndexOf(sigmaSet) +1 < AGroupContent.Count)
+                    result.Append(Environment.NewLine);
+            }
+
+            return result.ToString();
+        }
+
     }
 }

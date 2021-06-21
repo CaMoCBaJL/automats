@@ -43,6 +43,9 @@
             this.button3 = new System.Windows.Forms.Button();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
+            this.labelExperimentType = new System.Windows.Forms.Label();
+            this.radioButtonDiagnExp = new System.Windows.Forms.RadioButton();
+            this.radioButtonSetExp = new System.Windows.Forms.RadioButton();
             this.SuspendLayout();
             // 
             // richTextBox3
@@ -181,12 +184,12 @@
             this.button3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.button3.BackColor = System.Drawing.Color.Salmon;
             this.button3.Font = new System.Drawing.Font("Verdana", 20F);
-            this.button3.Location = new System.Drawing.Point(1074, 402);
+            this.button3.Location = new System.Drawing.Point(1074, 437);
             this.button3.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(164, 109);
             this.button3.TabIndex = 20;
-            this.button3.Text = "Выход";
+            this.button3.Text = "Назад";
             this.button3.UseVisualStyleBackColor = false;
             this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
@@ -210,11 +213,48 @@
             this.label4.Text = "Число итераций";
             this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // labelExperimentType
+            // 
+            this.labelExperimentType.AutoSize = true;
+            this.labelExperimentType.Font = new System.Drawing.Font("Lucida Calligraphy", 12F, System.Drawing.FontStyle.Bold);
+            this.labelExperimentType.Location = new System.Drawing.Point(56, 364);
+            this.labelExperimentType.Name = "labelExperimentType";
+            this.labelExperimentType.Size = new System.Drawing.Size(314, 27);
+            this.labelExperimentType.TabIndex = 24;
+            this.labelExperimentType.Text = "Выберите тип эксперимента";
+            // 
+            // radioButtonDiagnExp
+            // 
+            this.radioButtonDiagnExp.AutoSize = true;
+            this.radioButtonDiagnExp.Font = new System.Drawing.Font("Lucida Calligraphy", 10F, System.Drawing.FontStyle.Bold);
+            this.radioButtonDiagnExp.Location = new System.Drawing.Point(61, 412);
+            this.radioButtonDiagnExp.Name = "radioButtonDiagnExp";
+            this.radioButtonDiagnExp.Size = new System.Drawing.Size(341, 27);
+            this.radioButtonDiagnExp.TabIndex = 25;
+            this.radioButtonDiagnExp.TabStop = true;
+            this.radioButtonDiagnExp.Text = "Диагностический эксперимент";
+            this.radioButtonDiagnExp.UseVisualStyleBackColor = true;
+            // 
+            // radioButtonSetExp
+            // 
+            this.radioButtonSetExp.AutoSize = true;
+            this.radioButtonSetExp.Font = new System.Drawing.Font("Lucida Calligraphy", 10F, System.Drawing.FontStyle.Bold);
+            this.radioButtonSetExp.Location = new System.Drawing.Point(61, 454);
+            this.radioButtonSetExp.Name = "radioButtonSetExp";
+            this.radioButtonSetExp.Size = new System.Drawing.Size(310, 27);
+            this.radioButtonSetExp.TabIndex = 26;
+            this.radioButtonSetExp.TabStop = true;
+            this.radioButtonSetExp.Text = "Установочный эксперимент";
+            this.radioButtonSetExp.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1250, 557);
+            this.Controls.Add(this.radioButtonSetExp);
+            this.Controls.Add(this.radioButtonDiagnExp);
+            this.Controls.Add(this.labelExperimentType);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.button3);
@@ -233,7 +273,7 @@
             this.DoubleBuffered = true;
             this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Name = "Form1";
-            this.Text = "Automats";
+            this.Text = "Один автомат";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
             this.Resize += new System.EventHandler(this.Form1_Resize);
             this.ResumeLayout(false);
@@ -257,6 +297,9 @@
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.RichTextBox richTextBox3;
+        private System.Windows.Forms.Label labelExperimentType;
+        private System.Windows.Forms.RadioButton radioButtonDiagnExp;
+        private System.Windows.Forms.RadioButton radioButtonSetExp;
     }
 }
 

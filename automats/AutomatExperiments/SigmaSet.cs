@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 
 
-namespace AutomatTest
+namespace AutomatExperiments
 {
-    class SigmaSet
+    public class SigmaSet
     {
         public Dictionary<string, List<int>> SetContent { get; private set; }
 

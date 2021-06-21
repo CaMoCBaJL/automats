@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AutomatExperiments;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace automats
     static class Operations
     {
 
-        static public void ShowMessage(string msg) => MessageBox.Show(msg);
+        static public void ShowMessage(string msg) => MessageBox.Show(msg, "Внимание!", MessageBoxButtons.OK);
 
         static public List<Label> GetGroupLabels(int groupNum, List<int> groups, List<AutOptions> groupsElems)
         {
@@ -75,6 +76,113 @@ namespace automats
             }
 
             return destinationArray;
+        }
+
+        static public void FindDiagrammCenter(Dictionary<int, List<string>> layers, out int center, int labelWidth, Rectangle ClientRectangle)
+        {
+            int result;
+
+            center = 0;
+
+            foreach (var layer in layers)
+            {
+                if (layer.Value.Count % 2 == 0)
+                {
+                    result = 20 + (layer.Value.Count / 2) * (labelWidth + 20);
+
+                    if (result < ClientRectangle.Width / 2)
+                        result = ClientRectangle.Width / 2;
+                }
+                else
+                {
+                    result = 20 + labelWidth / 2 + (layer.Value.Count / 2) * (labelWidth + 20);
+
+                    if (result < ClientRectangle.Width / 2)
+                        result = ClientRectangle.Width / 2 + labelWidth / 2 + 10;
+                }
+
+                if (center < result)
+                    center = result;
+            }
+        }
+
+        static public int FindLayerOffset(int labelsNum, int centerX, int labelWidth)
+        {
+            if (centerX * 2 / labelsNum - labelWidth > 20)
+                return ((centerX * 2) / labelsNum - labelWidth);
+
+            return 20;
+        }
+
+        /// <summary>
+        /// f(labelNum) = centerX + (-1)^[(labelNum + 1) % 2]*( offsetX * (labelNum % 2) + stepX * (labelNum / 2) + labelWidth / 2)
+        /// </summary>
+        /// <param name=""></param>
+        static public Point FindLabelLocationInOddLayer(int centerX, int stepY, int stepX, int layerNum, int labelNum, int offsetX, int labelWidth)
+            =>
+            new Point((centerX + (int)(Math.Pow(-1, (labelNum + 1) % 2))
+                * (labelWidth / 2
+                + offsetX * (labelNum % 2)
+                + stepX * (labelNum / 2))), stepY * layerNum);
+
+        /// <summary>
+        /// f(labelNum) = centerX + (-1)^[(labelNum + 1) % 2]*( offsetX * (labelNum / 2) + stepX * ((labelNum / 2) + 1 - (labelNum % 2)) + offsetX / 2)
+        /// </summary>
+        /// <param name=""></param>
+        static public Point FindLabelLocationInEvenLayer(int centerX, int stepY, int stepX, int layerNum, int labelNum, int offsetX)
+        =>
+            new Point(centerX + (int)(Math.Pow(-1, (labelNum + 1) % 2))
+                * (stepX * ((labelNum / 2) + 1 - (labelNum % 2))
+                + offsetX * (labelNum / 2)
+                + offsetX / 2), stepY * layerNum);
+
+        static public Dictionary<int, List<string>> ParseAgroups(Dictionary<int, List<AGroup>> experimentResult)
+        {
+            Dictionary<int, List<string>> result = new Dictionary<int, List<string>>();
+
+            foreach (var layer in experimentResult)
+            {
+                List<string> currentLayer = new List<string>();
+
+                foreach (var group in layer.Value)
+                {
+                    currentLayer.Add(group.ToString());
+                }
+
+                result.Add(layer.Key, currentLayer);
+            }
+
+            return result;
+        }
+
+        static public Dictionary<int, List<int>> FindAllPairsToConnect(Dictionary<int, List<AGroup>> experimentResult, int inputsNum)
+        {
+            Dictionary<int, List<int>> result = new Dictionary<int, List<int>>();
+
+            int counter = 0;
+
+            for (int i = 0; i < experimentResult.Count; i++)
+            {
+                for (int groupNum = 0; groupNum < experimentResult[i].Count; groupNum++)
+                {
+                    var prevIndx = 0;
+
+                    if (i > 0)
+                        prevIndx = experimentResult[i - 1].IndexOf(experimentResult[i][groupNum].AncestorAGroup) + counter + 1 - experimentResult[i - 1].Count;
+
+                    if (experimentResult[i][groupNum].AncestorAGroup != null)
+                    {
+                        if (!result.ContainsKey(prevIndx))
+                            result.Add(prevIndx, new List<int>());
+
+                        result[prevIndx].Add(groupNum + 1 + counter);
+                    }
+                }
+
+                counter += experimentResult[i].Count;
+            }
+
+            return result;
         }
 
     }

@@ -5,7 +5,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-
+using AutomatExperiments;
 
 namespace automats
 {
@@ -40,14 +40,24 @@ namespace automats
 
             if (executionType == ExecutionType.Experiment)
             {
+                Text = "Проведение экспериментов над автоматом";
+
                 richTextBox1.Hide();
                 richTextBox2.Hide();
                 label3.Hide();
                 label1.Hide();
                 label4.Hide();
                 textBox1.Hide();
-
+                panel1.Hide();
                 UpdateUi();
+            }
+            else
+            {
+                Text = "Моделирование работы автомата";
+
+                labelExperimentType.Hide();
+                radioButtonDiagnExp.Hide();
+                radioButtonSetExp.Hide();
             }
 
             pictureBox1 = new PictureBox();
@@ -64,7 +74,6 @@ namespace automats
             isAutFirst = autLevel;
             autG = auts;
             automatNum = autNum;
-
 
             button3.Hide();
             pictureBox1 = new PictureBox();
@@ -185,17 +194,18 @@ namespace automats
 
             if (execType == ExecutionType.Experiment)
             {
-                panel1.Height = ClientRectangle.Height - richTextBox3.Location.Y;
-
-                panel1.Width = ClientRectangle.Width - 60 - panel1.Location.X - label2.Width;
-
-                panel1.Location = new Point(richTextBox3.Location.X + richTextBox3.Width + 30, richTextBox3.Location.Y);
-
-                label2.Location = new Point(panel1.Location.X + panel1.Width + 30, panel1.Location.Y);
+                label2.Location = new Point(richTextBox3.Location.X + richTextBox3.Width + 30, richTextBox3.Location.Y);
 
                 textBox2.Location = new Point(label2.Location.X + 40, label2.Location.Y + label2.Height + 20);
 
                 button1.Location = new Point(textBox2.Location.X + 20, textBox2.Location.Y + textBox2.Height + 20);
+
+                labelExperimentType.Location = new Point(label2.Location.X + label2.Width + 40, label2.Location.Y);
+
+                radioButtonDiagnExp.Location = new Point(labelExperimentType.Location.X + 20, labelExperimentType.Location.Y + 30);
+
+                radioButtonSetExp.Location = new Point(radioButtonDiagnExp.Location.X, radioButtonDiagnExp.Location.Y + 30);
+
             }
         }
 
@@ -248,54 +258,85 @@ namespace automats
 
             else
             {
-                if (!string.IsNullOrEmpty(richTextBox1.Text) && !string.IsNullOrEmpty(textBox2.Text))
+                if (execType == ExecutionType.Modeling)
                 {
-                    inputCondSet = new List<string>(textBox2.Text.Split(spaceToSplit, StringSplitOptions.RemoveEmptyEntries));
-                    inputSignalSet = new List<string>(richTextBox1.Text.Split(spaceToSplit, StringSplitOptions.RemoveEmptyEntries));
-
-                    int f = 0;
-                    while (f < condNum - 1 && f < inputCondSet.Count)
+                    if (!string.IsNullOrEmpty(richTextBox1.Text) && !string.IsNullOrEmpty(textBox2.Text))
                     {
-                        string s = inputCondSet[f];
-                        inputCondSet.RemoveAll(str => str == s);
-                        inputCondSet.Add(s);
-                        f++;
-                    }
+                        inputCondSet = new List<string>(textBox2.Text.Split(spaceToSplit, StringSplitOptions.RemoveEmptyEntries));
+                        inputSignalSet = new List<string>(richTextBox1.Text.Split(spaceToSplit, StringSplitOptions.RemoveEmptyEntries));
 
-                    inputCondSet.Sort();
-
-                    try
-                    {
-                        if (!string.IsNullOrEmpty(textBox1.Text.Trim()))
+                        int f = 0;
+                        while (f < condNum - 1 && f < inputCondSet.Count)
                         {
-                            int counter = int.Parse(textBox1.Text);
-
-                            while (counter > 0)
-                            {
-                                StartAutomat();
-
-                                inputSignalSet = lambdaRes.Cast<string>().ToList();
-
-                                counter--;
-                            }
-
-                            StartAutomat();
+                            string s = inputCondSet[f];
+                            inputCondSet.RemoveAll(str => str == s);
+                            inputCondSet.Add(s);
+                            f++;
                         }
 
-                        else
-                            StartAutomat();
+                        inputCondSet.Sort();
 
-                        panel1.Update();
+                        try
+                        {
+                            if (!string.IsNullOrEmpty(textBox1.Text.Trim()))
+                            {
+                                int counter = int.Parse(textBox1.Text);
 
-                        Refresh();
+                                while (counter > 0)
+                                {
+                                    StartAutomat();
+
+                                    inputSignalSet = lambdaRes.Cast<string>().ToList();
+
+                                    counter--;
+                                }
+
+                                StartAutomat();
+                            }
+
+                            else
+                                StartAutomat();
+
+                            panel1.Update();
+
+                            Refresh();
+                        }
+                        catch (Exception)
+                        {
+                            Operations.ShowMessage("Ошибка при вводе!");
+                        }
                     }
-                    catch (Exception)
-                    {
+                    else
                         Operations.ShowMessage("Ошибка при вводе!");
-                    }
                 }
                 else
-                    Operations.ShowMessage("Ошибка при вводе!");
+                {
+                    if (!string.IsNullOrEmpty(textBox2.Text.Trim()) && !string.IsNullOrEmpty(fileName))
+                    {
+                        if (radioButtonSetExp.Checked ^ radioButtonDiagnExp.Checked)
+                        {
+                            Experiments.ExperimentType experimentType;
+
+                            if (radioButtonDiagnExp.Checked)
+                                experimentType = Experiments.ExperimentType.Diagnostic;
+                            else
+                                experimentType = Experiments.ExperimentType.Setting;
+
+                            List<int> initialConditionsSet = new List<int>();
+
+                            foreach (var item in textBox2.Text.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries))
+                                initialConditionsSet.Add(int.Parse(item));
+
+                            new Form4(Experiments.StartTheExperiment(
+                                initialConditionsSet, condTable, outputTable, experimentType), inputNum)
+                                .Show();
+                        }
+                        else
+                            Operations.ShowMessage("Выберите тип эксперимента!");
+                    }
+                    else
+                        Operations.ShowMessage("Ошибка при вводе!");
+                }
             }
         }
 
@@ -311,10 +352,10 @@ namespace automats
             {
                 for (int elem = 1; elem <= inputSignalSet.Count; elem++)
                 {
-                    deltaRes[i, elem] = AutOptions.Delta(condTable, deltaRes[i, elem - 1],
+                    deltaRes[i, elem] = AutomatFunctions.Operations.Delta(condTable, deltaRes[i, elem - 1],
                         int.Parse(inputSignalSet[elem - 1]));
 
-                    lambdaRes[i, elem - 1] = AutOptions.Lambda(outputTable, deltaRes[i, elem - 1],
+                    lambdaRes[i, elem - 1] = AutomatFunctions.Operations.Lambda(outputTable, deltaRes[i, elem - 1],
                         int.Parse(inputSignalSet[elem - 1]));
                 }
             }
@@ -402,7 +443,12 @@ namespace automats
             }
         }
 
-        private void button3_Click(object sender, EventArgs e) => Environment.Exit(0);
+        private void button3_Click(object sender, EventArgs e)
+        {
+            this.Hide();
+
+            new Form2().Show();
+        }
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e) => Environment.Exit(0);
 

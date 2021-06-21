@@ -1,10 +1,9 @@
 ﻿using System.Linq;
 using System.Collections.Generic;
-using automats;
 
-namespace AutomatTest
+namespace AutomatExperiments
 {
-    static class Experiments
+    public class Experiments
     {
         public enum ExperimentType
         {
@@ -14,10 +13,10 @@ namespace AutomatTest
         }
 
 
-        static public List<List<AGroup>> StartTheExperiment(List<int> initialConditionsSet,
+        public static Dictionary<int, List<AGroup>> StartTheExperiment(List<int> initialConditionsSet,
             int[,] conditionTable, string[,] outputTable, ExperimentType experimentType)
         {
-            List<List<AGroup>> result = new List<List<AGroup>>();
+            Dictionary<int, List<AGroup>> result = new Dictionary<int, List<AGroup>>();
 
             var initAGroup = new List<AGroup>();
 
@@ -30,12 +29,14 @@ namespace AutomatTest
                         new SigmaSet[]{
                         new SigmaSet(initialConditionsSet, "-")
                                       }, null));
+
+                    result.Add(0, initAGroup);
                 }
                 else
                     initAGroup = TrimTheTree(initAGroup, result[result.Count - 1], experimentType);
 
                 if (initAGroup != null)
-                    result.Add(IterateTheExperiment(initAGroup, conditionTable, outputTable));
+                    result.Add(result.Count, IterateTheExperiment(initAGroup, conditionTable, outputTable));
                 else
                     throw new System.Exception("Ошибка!");
 
@@ -112,8 +113,8 @@ namespace AutomatTest
                             SigmaSet newSet = new SigmaSet();
 
                             foreach (var condition in conditionSet)
-                                newSet.Add(AutOptions.Lambda(outputTable, condition, inputSignal),
-                                    AutOptions.Delta(conditionTable, condition, inputSignal));
+                                newSet.Add(AutomatFunctions.Operations.Lambda(outputTable, condition, inputSignal),
+                                    AutomatFunctions.Operations.Delta(conditionTable, condition, inputSignal));
 
                             newGroup.AddElement(newSet);
                         }

@@ -36,8 +36,5 @@ namespace automats
 
         public static void ResetAutCounter() => AutNum = 1;
 
-        static public int Delta(int[,] condTable, int sj, int xj) => condTable[sj - 1, xj];
-
-        static public string Lambda(string[,] outputTable, int sj, int xj) => outputTable[sj - 1, xj];
     }
 }

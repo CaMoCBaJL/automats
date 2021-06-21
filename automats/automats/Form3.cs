@@ -288,7 +288,12 @@ namespace automats
             l1.BringToFront();
         }
 
-        private void button2_Click(object sender, EventArgs e) => Environment.Exit(0);
+        private void button2_Click(object sender, EventArgs e)
+        {
+            this.Hide();
+
+            new Form2().Show();
+        }
 
         private void Form3_FormClosed(object sender, FormClosedEventArgs e) => Environment.Exit(0);
 
