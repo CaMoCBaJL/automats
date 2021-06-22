@@ -37,7 +37,7 @@ namespace automats
             // 
             this.pictureBox1.BackColor = System.Drawing.Color.Pink;
             this.pictureBox1.Location = new System.Drawing.Point(0, 0);
-            this.pictureBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pictureBox1.Margin = new System.Windows.Forms.Padding(4);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(133, 62);
             this.pictureBox1.TabIndex = 0;
@@ -53,11 +53,12 @@ namespace automats
             this.AutoScroll = true;
             this.ClientSize = new System.Drawing.Size(1067, 554);
             this.Controls.Add(this.pictureBox1);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "Form4";
             this.Text = "Результат эксперимента";
             this.Load += new System.EventHandler(this.Form4_Load);
             this.Scroll += new System.Windows.Forms.ScrollEventHandler(this.Form4_Scroll);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form4_KeyDown);
             this.Resize += new System.EventHandler(this.Form4_Resize);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);

@@ -4,7 +4,6 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Linq;
 using AutomatExperiments;
-using System.Text;
 
 namespace automats
 {
@@ -22,14 +21,21 @@ namespace automats
 
         int nodeHeight = 50;
 
-        const int widestLetter = 18;
+        int widestLetter = 20;
+
+        int heighestLetter = 30;
 
 
         public Form4(Dictionary<int, List<AGroup>> expRes, int inputsNum)
         {
             InitializeComponent();
 
+            OnScroll(new ScrollEventArgs(ScrollEventType.SmallIncrement, 5));
+
             MouseWheel += (sender, args) => OnScroll(new ScrollEventArgs(ScrollEventType.ThumbPosition, Location.Y + 50));
+
+            //MouseWheel += (sender, args) => Form4_Scroll(sender, new ScrollEventArgs(ScrollEventType.ThumbPosition,
+            //    VerticalScroll.Value, VerticalScroll.Value + 5, ScrollOrientation.VerticalScroll));
 
             experimentResult = expRes;
 
@@ -53,9 +59,9 @@ namespace automats
             for (int layerNum = 0; layerNum < data.Count; layerNum++)
             {
 
-                nodeWidth = ((int)(experimentResult[layerNum].Max(group => group.AGroupContent.Max(sigmaSet => sigmaSet.Count)) * 1.3) + 2) * widestLetter;
+                nodeWidth = ((int)(experimentResult[layerNum].Max(group => group.AGroupContent.Max(sigmaSet => sigmaSet.Count)) * 1.5) + 2) * widestLetter;
 
-                nodeHeight = experimentResult[layerNum].Max(group => group.AGroupContent.Count) * 30 + 5;
+                nodeHeight = experimentResult[layerNum].Max(group => group.AGroupContent.Count) * heighestLetter + 10;
 
                 int offsetX = Operations.FindLayerOffset(data[layerNum].Count, centerX, nodeWidth);
 
@@ -79,7 +85,7 @@ namespace automats
 
                 newNodesLayer = new List<RichTextBox>();
             }
-
+            ActiveControl = null;
         }
 
         int SortNodes(Control c1, Control c2)
@@ -107,9 +113,10 @@ namespace automats
         {
             RichTextBox richTextBox = new RichTextBox()
             {
+
                 ReadOnly = true,
 
-                Font = new Font("Verdana 15", widestLetter),
+                Font = new Font("Verdana " + ((uint)(widestLetter - 3)).ToString(), widestLetter),
 
                 Text = labelText,
 
@@ -174,6 +181,8 @@ namespace automats
 
         private void Form4_Scroll(object sender, ScrollEventArgs e)
         {
+            ActiveControl = null;
+
             pictureBox1.Location = ClientRectangle.Location;
 
             pictureBox1.Size = Size;
@@ -195,8 +204,34 @@ namespace automats
 
         private void pictureBox1_LocationChanged(object sender, EventArgs e)
         {
-
+            //Refresh();
         }
 
+        private void Form4_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Control)
+            {
+                if (e.KeyCode == Keys.OemMinus)
+                {
+                    if (widestLetter > 1)
+                        widestLetter--;
+
+                    if (heighestLetter > 2)
+                        heighestLetter--;
+                }
+                if (e.KeyCode == Keys.Oemplus)
+                {
+                    if (widestLetter < 18)
+                        widestLetter++;
+
+                    if (heighestLetter < 30)
+                        heighestLetter++;
+                }
+            }
+
+            nodes.ForEach(node => Controls.Remove(node));
+
+            Form4_Load(this, EventArgs.Empty);
+        }
     }
 }
