@@ -34,9 +34,6 @@ namespace automats
 
             MouseWheel += (sender, args) => OnScroll(new ScrollEventArgs(ScrollEventType.ThumbPosition, Location.Y + 50));
 
-            //MouseWheel += (sender, args) => Form4_Scroll(sender, new ScrollEventArgs(ScrollEventType.ThumbPosition,
-            //    VerticalScroll.Value, VerticalScroll.Value + 5, ScrollOrientation.VerticalScroll));
-
             experimentResult = expRes;
 
             pairsToConnect = Operations.FindAllPairsToConnect(experimentResult, inputsNum);
@@ -52,13 +49,14 @@ namespace automats
 
             var data = Operations.ParseAgroups(experimentResult);
 
-            Operations.FindDiagrammCenter(data, out int centerX, nodeWidth, ClientRectangle);
+            var widestNode = ((int)(experimentResult.Max(pair => pair.Value.Max(group => group.AGroupContent.Max(sigmaSet => sigmaSet.Count))) * 1.5) + 2) * widestLetter;
+
+            Operations.FindDiagrammCenter(data, out int centerX, widestNode, ClientRectangle);
 
             List<RichTextBox> newNodesLayer = new List<RichTextBox>();
 
             for (int layerNum = 0; layerNum < data.Count; layerNum++)
             {
-
                 nodeWidth = ((int)(experimentResult[layerNum].Max(group => group.AGroupContent.Max(sigmaSet => sigmaSet.Count)) * 1.5) + 2) * widestLetter;
 
                 nodeHeight = experimentResult[layerNum].Max(group => group.AGroupContent.Count) * heighestLetter + 10;
@@ -113,7 +111,6 @@ namespace automats
         {
             RichTextBox richTextBox = new RichTextBox()
             {
-
                 ReadOnly = true,
 
                 Font = new Font("Verdana " + ((uint)(widestLetter - 3)).ToString(), widestLetter),
