@@ -5,25 +5,21 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Entities;
 using AutomatExperiments;
+using CommonLogic;
+using AutomatModelling;
 
-namespace automats
+namespace PresentationLayer
 {
     public partial class Form1 : Form
     {
-        const int columnWidth = 60;
-        char[] spaceToSplit = new char[] { ' ' };
 
+
+        Automat currentAutomat;
         string fileName;
-        int condNum;
-        int inputNum;
-        int outputNum;
-        int[,] condTable;
-        string[,] outputTable;
-        int[,] deltaRes; //результат работы для автомата(состояния).
-        string[,] lambdaRes; //результат работы для автомата(выходы).
         List<string> inputSignalSet;
-        List<string> inputCondSet;
+        List<int> inputCondSet;
         List<AutOptions> autG = new List<AutOptions>();
         bool isAutFirst;
         int automatNum = 0;
@@ -43,13 +39,9 @@ namespace automats
                 Text = "Проведение экспериментов над автоматом";
 
                 richTextBox1.Hide();
-                richTextBox2.Hide();
-                label3.Hide();
                 label1.Hide();
                 label4.Hide();
                 textBox1.Hide();
-                panel1.Hide();
-                UpdateUi();
             }
             else
             {
@@ -60,9 +52,6 @@ namespace automats
                 radioButtonSetExp.Hide();
             }
 
-            pictureBox1 = new PictureBox();
-            pictureBox1.Paint += pictureBox1_Paint;
-            panel1.Controls.Add(pictureBox1);
             DataShow();
         }
 
@@ -76,11 +65,7 @@ namespace automats
             automatNum = autNum;
 
             button3.Hide();
-            pictureBox1 = new PictureBox();
-            pictureBox1.Paint += pictureBox1_Paint;
-            pictureBox1.SizeMode = PictureBoxSizeMode.AutoSize;
-            panel1.Controls.Add(pictureBox1);
-            
+
             DataShow();
             Button ret = new Button();
             ret.Location = new Point(richTextBox3.Location.X + 5,
@@ -92,7 +77,7 @@ namespace automats
 
             if (autLevel)
             {
-                AutOptions a =  autG[automatNum];
+                AutOptions a = autG[automatNum];
                 textBox2.Text = a.StartCondition.ToString();
                 richTextBox1.Text = a.OutputSignals.ToString();
             }
@@ -104,7 +89,7 @@ namespace automats
                 richTextBox1.ReadOnly = true;
                 button1.Hide();
                 if (!string.IsNullOrEmpty(fileName))
-                    button1_Click(inputNum, EventArgs.Empty);
+                    button1_Click(currentAutomat.DeltaTable.GetLength(1), EventArgs.Empty);
             }
             if (!string.IsNullOrEmpty(richTextBox1.Text) && !string.IsNullOrEmpty(textBox2.Text) &&
                 !string.IsNullOrEmpty(fileName))
@@ -123,13 +108,7 @@ namespace automats
                     a.StartCondition = new StringBuilder(textBox2.Text);
                     a.InputSignals = new StringBuilder(richTextBox1.Text);
                 }
-                for (int i = 0; i < inputCondSet.Count; i++)
-                {
-                    for (int j = 0; j < inputSignalSet.Count; j++)
-                    {
-                        a.OutputSignals.Append(lambdaRes[i, j] + " ");
-                    }
-                }
+
                 autG[automatNum] = a;
             }
 
@@ -141,37 +120,44 @@ namespace automats
         public void DataShow()
         {
             if (!string.IsNullOrEmpty(fileName))
+                UpdateUserInterface(currentAutomat);
+        }
+
+        void UpdateUserInterface(Automat automat)
+        {
+            int condNum = automat.DeltaTable.GetLength(0);
+
+            int inputNum = automat.DeltaTable.GetLength(1);
+
+            int outputNum = automat.LambdaTable.GetLength(1);
+
+            CalculateElementsSizes(condNum, inputNum, outputNum);
+
+            UpdateRichTextBox3(condNum, inputNum, outputNum);
+
+            UpdateRichTextBox4(inputNum, outputNum);
+
+            if (execType == ExecutionType.Experiment)
             {
-                AutParser parser = new AutParser(fileName);
-
-                var data = parser.ParseData();
-
-                condTable = data.conditions;
-
-                outputTable = data.outputSignals;
-
-                condNum = condTable.GetLength(0);
-
-                inputNum = condTable.GetLength(1);
-
-                outputNum = outputTable.GetLength(1);
-
-                UpdateUi();
+                SetExperimentInterface();
             }
         }
 
-        void UpdateUi()
+        void CalculateElementsSizes(int condNum, int inputNum, int outputNum)
         {
-            if (columnWidth * (inputNum + outputNum + 1) > 235)
+            if (FontLogic.columnWidth * (inputNum + outputNum + 1) > 235)
                 richTextBox3.Width = 240;
             else
-                richTextBox3.Width = columnWidth * (inputNum + outputNum + 1);
+                richTextBox3.Width = FontLogic.columnWidth * (inputNum + outputNum + 1);
 
-            if ((condNum+1) * 48 > 280)
+            if ((condNum + 1) * 48 > 280)
                 richTextBox3.Height = 280;
             else
                 richTextBox3.Height = (condNum + 1) * 48;
+        }
 
+        void UpdateRichTextBox3(int condNum, int inputNum, int outputNum)
+        {
             StringBuilder richTextBox3Content = new StringBuilder();
 
             for (int i = 0; i < condNum; i++)
@@ -182,34 +168,18 @@ namespace automats
                 richTextBox3Content.Append(i + 1);
 
                 for (int j = 0; j < inputNum; j++)
-                    richTextBox3Content.Append("\t" + condTable[i, j]);
+                    richTextBox3Content.Append("\t" + currentAutomat.DeltaTable[i, j]);
 
                 for (int j = 0; j < outputNum; j++)
-                    richTextBox3Content.Append("\t" + outputTable[i, j]);
+                    richTextBox3Content.Append("\t" + currentAutomat.LambdaTable[i, j]);
             }
 
             richTextBox3.Text = richTextBox3Content.ToString();
 
-            UpdateRichTextBox4();
 
-            if (execType == ExecutionType.Experiment)
-            {
-                label2.Location = new Point(richTextBox3.Location.X + richTextBox3.Width + 30, richTextBox3.Location.Y);
-
-                textBox2.Location = new Point(label2.Location.X + 40, label2.Location.Y + label2.Height + 20);
-
-                button1.Location = new Point(textBox2.Location.X + 20, textBox2.Location.Y + textBox2.Height + 20);
-
-                labelExperimentType.Location = new Point(label2.Location.X + label2.Width + 40, label2.Location.Y);
-
-                radioButtonDiagnExp.Location = new Point(labelExperimentType.Location.X + 20, labelExperimentType.Location.Y + 30);
-
-                radioButtonSetExp.Location = new Point(radioButtonDiagnExp.Location.X, radioButtonDiagnExp.Location.Y + 30);
-
-            }
         }
 
-        void UpdateRichTextBox4()
+        void UpdateRichTextBox4(int inputNum, int outputNum)
         {
             richTextBox4.Width = richTextBox3.Location.X + richTextBox3.Width - richTextBox4.Location.X;
 
@@ -220,6 +190,22 @@ namespace automats
             richTextBox4Content.Append(AddSignalIndication(outputNum));
 
             richTextBox4.Text = richTextBox4Content.ToString();
+        }
+
+        void SetExperimentInterface()
+        {
+            label2.Location = new Point(richTextBox3.Location.X + richTextBox3.Width + 30, richTextBox3.Location.Y);
+
+            textBox2.Location = new Point(label2.Location.X + 40, label2.Location.Y + label2.Height + 20);
+
+            button1.Location = new Point(textBox2.Location.X + 20, textBox2.Location.Y + textBox2.Height + 20);
+
+            labelExperimentType.Location = new Point(label2.Location.X + label2.Width + 40, label2.Location.Y);
+
+            radioButtonDiagnExp.Location = new Point(labelExperimentType.Location.X + 20, labelExperimentType.Location.Y + 30);
+
+            radioButtonSetExp.Location = new Point(radioButtonDiagnExp.Location.X, radioButtonDiagnExp.Location.Y + 30);
+
         }
 
         string AddSignalIndication(int number)
@@ -244,7 +230,7 @@ namespace automats
                         (ClientRectangle.Height / 10) * 6);
             }
 
-            UpdateUi();
+            DataShow();
 
             Refresh();
         }
@@ -254,7 +240,7 @@ namespace automats
             richTextBox1.Multiline = true;
 
             if (string.IsNullOrEmpty(fileName))
-                Operations.ShowMessage("Добавьте автомат.");
+                MessageBox.Show("Добавьте автомат.");
 
             else
             {
@@ -262,52 +248,32 @@ namespace automats
                 {
                     if (!string.IsNullOrEmpty(richTextBox1.Text) && !string.IsNullOrEmpty(textBox2.Text))
                     {
-                        inputCondSet = new List<string>(textBox2.Text.Split(spaceToSplit, StringSplitOptions.RemoveEmptyEntries));
-                        inputSignalSet = new List<string>(richTextBox1.Text.Split(spaceToSplit, StringSplitOptions.RemoveEmptyEntries));
+                        inputCondSet = GetDistinctStartConditionsSet();
 
-                        int f = 0;
-                        while (f < condNum - 1 && f < inputCondSet.Count)
-                        {
-                            string s = inputCondSet[f];
-                            inputCondSet.RemoveAll(str => str == s);
-                            inputCondSet.Add(s);
-                            f++;
-                        }
-
-                        inputCondSet.Sort();
+                        inputSignalSet = new List<string>();
 
                         try
                         {
+                            int iterCounter = 0;
+
                             if (!string.IsNullOrEmpty(textBox1.Text.Trim()))
-                            {
-                                int counter = int.Parse(textBox1.Text);
+                                int.TryParse(textBox1.Text, out iterCounter);
 
-                                while (counter > 0)
-                                {
-                                    StartAutomat();
+                            var data = new ModellingLogic().ModelTheAutomatWork(GetDistinctStartConditionsSet(),
+                                richTextBox1.Text.Split(FontLogic.spaceToSplit, StringSplitOptions.RemoveEmptyEntries).ToList(),
+                                currentAutomat, iterCounter);
 
-                                    inputSignalSet = lambdaRes.Cast<string>().ToList();
-
-                                    counter--;
-                                }
-
-                                StartAutomat();
-                            }
-
-                            else
-                                StartAutomat();
-
-                            panel1.Update();
+                            new Form4(data, execType).Show();
 
                             Refresh();
                         }
                         catch (Exception)
                         {
-                            Operations.ShowMessage("Ошибка при вводе!");
+                            MessageBox.Show("Ошибка при вводе!");
                         }
                     }
                     else
-                        Operations.ShowMessage("Ошибка при вводе!");
+                        MessageBox.Show("Ошибка при вводе!");
                 }
                 else
                 {
@@ -327,94 +293,30 @@ namespace automats
                             foreach (var item in textBox2.Text.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries))
                                 initialConditionsSet.Add(int.Parse(item));
 
-                            new Form4(Experiments.StartTheExperiment(
-                                initialConditionsSet, condTable, outputTable, experimentType), inputNum)
-                                .Show();
+                            var data = Experiments.StartTheExperiment(
+                               initialConditionsSet, currentAutomat.DeltaTable, currentAutomat.LambdaTable, experimentType);
+
+                            new Form4(data, execType).Show();
                         }
                         else
-                            Operations.ShowMessage("Выберите тип эксперимента!");
+                            MessageBox.Show("Выберите тип эксперимента!");
                     }
                     else
-                        Operations.ShowMessage("Ошибка при вводе!");
+                        MessageBox.Show("Ошибка при вводе!");
                 }
             }
         }
 
-        void StartAutomat()
+        List<int> GetDistinctStartConditionsSet()
         {
-            deltaRes = new int[inputCondSet.Count, inputSignalSet.Count + 1];
-            lambdaRes = new string[inputCondSet.Count, inputSignalSet.Count];
+            SortedSet<int> result = new SortedSet<int>();
 
-            for (int j = 0; j < inputCondSet.Count; j++) 
-                deltaRes[j, 0] = int.Parse(inputCondSet[j]);
-
-            for (int i = 0; i < inputCondSet.Count; i++)
+            foreach (var item in textBox2.Text.Split(FontLogic.spaceToSplit, StringSplitOptions.RemoveEmptyEntries))
             {
-                for (int elem = 1; elem <= inputSignalSet.Count; elem++)
-                {
-                    deltaRes[i, elem] = AutomatFunctions.Operations.Delta(condTable, deltaRes[i, elem - 1],
-                        int.Parse(inputSignalSet[elem - 1]));
-
-                    lambdaRes[i, elem - 1] = AutomatFunctions.Operations.Lambda(outputTable, deltaRes[i, elem - 1],
-                        int.Parse(inputSignalSet[elem - 1]));
-                }
+                result.Add(int.Parse(item));
             }
 
-            richTextBox2.Text = string.Empty;
-            richTextBox2.Width = condNum * 28;
-
-            for (int i = 0; i < inputSignalSet.Count + 1; i++)
-            {
-                for (int j = 0; j < inputCondSet.Count; j++)
-                {
-                    if (i == 0)
-                        richTextBox2.Text += inputCondSet[j] + " ";
-                    else 
-                        richTextBox2.Text += lambdaRes[j, i - 1] + " ";
-                }
-
-                richTextBox2.Text += "\n";
-            }
-        }
-
-        private void pictureBox1_Paint(object sender, PaintEventArgs e)
-        {
-            if (inputSignalSet != null && !string.IsNullOrEmpty(textBox2.Text))
-            {
-                Graphics g = e.Graphics;
-                int sideSize = 35;
-                Font f1 = new Font("Times New Roman", 18);
-                Font f2 = new Font("Times New Roman", 9);
-                Rectangle rect;
-                pictureBox1.Width = (inputSignalSet.Count + 1) * (sideSize + 35);
-                pictureBox1.Height = (inputCondSet.Count + 1) * (sideSize);
-                panel1.Height = pictureBox1.Height;
-                Rectangle rect1 = pictureBox1.ClientRectangle;
-                for (int j = 0; j < inputCondSet.Count; j++)
-                {
-                    int b = 10;
-                    for (int i = 0; i < inputSignalSet.Count; i++)
-                    {
-                        rect = new Rectangle(sideSize + b, (j+1) * sideSize, sideSize - 5, sideSize - 5);
-                        g.DrawEllipse(Pens.RosyBrown, rect);
-                        g.DrawString((deltaRes[j, i] + ""), f1, Brushes.Black,
-                            new RectangleF(sideSize + b + 6, 
-                            (j + 1) * sideSize + 2, sideSize,sideSize));
-                        g.DrawLine(Pens.Black, b - 5 + sideSize * 2,
-                            (float)(sideSize * 1.45 + j * sideSize), 
-                            b + sideSize * 2 + 25, (float)(sideSize * 1.45 + j * sideSize));
-                        g.DrawString(inputSignalSet[i] + "/" + lambdaRes[j, 
-                            i / inputCondSet.Count], f2, Brushes.Black,
-                            new RectangleF(b + sideSize * 2, (j + 1) * sideSize,
-                            sideSize + 10, sideSize));
-                        b += 60;
-                    }
-                    rect = new Rectangle(sideSize + b, (j + 1) * sideSize, sideSize - 5, sideSize - 5);
-                    g.DrawEllipse(Pens.RosyBrown, rect);
-                    g.DrawString((deltaRes[j, inputSignalSet.Count] + ""), f1, Brushes.Black,
-                        new RectangleF(sideSize + b + 6, (j + 1) * sideSize + 2, sideSize, sideSize));
-                }
-            }
+            return result.ToList();
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -427,6 +329,8 @@ namespace automats
             {
                 fileName = k.FileName;
 
+                currentAutomat = new Logic().GetAutomatTables(fileName);
+
                 if (autG.Count > 0)
                 {
                     AutOptions a = autG[automatNum];
@@ -434,12 +338,10 @@ namespace automats
                     autG[automatNum] = a;
                 }
 
-                DataShow();
-
                 if (!isAutFirst)
                     button1_Click(sender, EventArgs.Empty);
 
-                UpdateUi();
+                UpdateUserInterface(currentAutomat);
             }
         }
 
@@ -458,7 +360,7 @@ namespace automats
             {
                 textBox1.Text = string.Empty;
 
-                Operations.ShowMessage("Неверно введно число итераций");
+                MessageBox.Show("Неверно введно число итераций");
             }
         }
 

@@ -1,5 +1,5 @@
 ﻿
-namespace automats
+namespace PresentationLayer
 {
     partial class Form4
     {

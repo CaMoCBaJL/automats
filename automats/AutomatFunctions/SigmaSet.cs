@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 
-namespace AutomatExperiments
+namespace Entities
 {
     public class SigmaSet
     {

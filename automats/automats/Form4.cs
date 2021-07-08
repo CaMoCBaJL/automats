@@ -4,39 +4,50 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Linq;
 using AutomatExperiments;
+using Entities;
+using CommonLogic;
 
-namespace automats
+namespace PresentationLayer
 {
     public partial class Form4 : Form
     {
-        Dictionary<int, List<AGroup>> experimentResult;
-        
+        ExecutionType executionType;
+
+
+        Dictionary<int, List<string>> receivedData;
+
         List<RichTextBox> nodes;
 
         Dictionary<int, List<int>> pairsToConnect;
 
         Graphics globalGraphics;
 
-        int nodeWidth = 100;
 
-        int nodeHeight = 50;
-
-        int widestLetter = 20;
-
-        int heighestLetter = 30;
-
-
-        public Form4(Dictionary<int, List<AGroup>> expRes, int inputsNum)
+        public Form4(Dictionary<int, List<AutomatConfiguration>> processedData, ExecutionType execType)
         {
             InitializeComponent();
 
-            OnScroll(new ScrollEventArgs(ScrollEventType.SmallIncrement, 5));
+            executionType = execType;
 
             MouseWheel += (sender, args) => OnScroll(new ScrollEventArgs(ScrollEventType.ThumbPosition, Location.Y + 50));
 
-            experimentResult = expRes;
+            receivedData = new Logic().ParseConfigurations(processedData);
 
-            pairsToConnect = Operations.FindAllPairsToConnect(experimentResult, inputsNum);
+            pairsToConnect = new Logic().FindAllPairsToConnect(processedData);
+        }
+
+
+        public Form4(Dictionary<int, List<AGroup>> processedData, ExecutionType execType)
+        {
+            InitializeComponent();
+
+            executionType = execType;
+
+            MouseWheel += (sender, args) => OnScroll(new ScrollEventArgs(ScrollEventType.ThumbPosition, Location.Y + 50));
+
+            receivedData = new Logic().ParseAgroups(processedData); ;
+
+            pairsToConnect = new Logic().FindAllPairsToConnect(processedData);
         }
 
         private void Form4_Load(object sender, EventArgs e)
@@ -47,33 +58,63 @@ namespace automats
 
             globalGraphics = pictureBox1.CreateGraphics();
 
-            var data = Operations.ParseAgroups(experimentResult);
+            int widestNode = DrawingLogic.FindWidestNode(receivedData, executionType);
 
-            var widestNode = ((int)(experimentResult.Max(pair => pair.Value.Max(group => group.AGroupContent.Max(sigmaSet => sigmaSet.Count))) * 1.5) + 2) * widestLetter;
+            new DrawingLogic().FindDiagrammCenter(receivedData, out int centerX, widestNode, ClientRectangle);
 
-            Operations.FindDiagrammCenter(data, out int centerX, widestNode, ClientRectangle);
+            var dataToCreateNodeNet = receivedData;
 
+            if (executionType == ExecutionType.Modeling)
+                dataToCreateNodeNet = CreateDataForNodeNet(receivedData);
+
+            CreateNodeNet(dataToCreateNodeNet, centerX, widestNode);
+
+            ActiveControl = null;
+        }
+
+        Dictionary<int, List<string>> CreateDataForNodeNet(Dictionary<int, List<string>> dataToRebuild)
+        {
+            Dictionary<int, List<string>> result = new Dictionary<int, List<string>>();
+
+            foreach (var key in dataToRebuild.Keys)
+                result.Add(key, new List<string>());
+
+            foreach (var valueSet in dataToRebuild)
+            {
+                foreach (var value in valueSet.Value)
+                {
+                    result[valueSet.Key].Add(value.Split()[0]);
+                }
+            }
+
+            return result;
+        }
+
+        void CreateNodeNet(Dictionary<int, List<string>> data, int centerX, int widestNode)
+        {
             List<RichTextBox> newNodesLayer = new List<RichTextBox>();
 
             for (int layerNum = 0; layerNum < data.Count; layerNum++)
             {
-                nodeWidth = ((int)(experimentResult[layerNum].Max(group => group.AGroupContent.Max(sigmaSet => sigmaSet.Count)) * 1.5) + 2) * widestLetter;
+                var nodeSize = DrawingLogic.FindNodeSize(data[layerNum], executionType);
 
-                nodeHeight = experimentResult[layerNum].Max(group => group.AGroupContent.Count) * heighestLetter + 10;
+                int nodeWidth = nodeSize.nodeWidth;
 
-                int offsetX = Operations.FindLayerOffset(data[layerNum].Count, centerX, nodeWidth);
+                int nodeHeight = nodeSize.nodeHeight;
+
+                int offsetX = DrawingLogic.FindLayerOffset(data[layerNum].Count, centerX, nodeWidth);
 
                 for (int i = 0; i < data[layerNum].Count; i++)
                 {
-                    newNodesLayer.Add(CreateNode(data[layerNum][i]));
+                    newNodesLayer.Add(CreateNode(data[layerNum][i], nodeSize, widestNode));
 
                     if (data[layerNum].Count % 2 == 0)
                         newNodesLayer.Last().Location =
-                            Operations.FindLabelLocationInEvenLayer(centerX, nodeHeight + 50, nodeWidth,
+                            DrawingLogic.FindLabelLocationInEvenLayer(centerX, nodeHeight + 50, nodeWidth,
                             layerNum + 1 + 1, i, offsetX);
                     else
                         newNodesLayer.Last().Location =
-                            Operations.FindLabelLocationInOddLayer(centerX, nodeHeight + 50, nodeWidth + offsetX,
+                            DrawingLogic.FindLabelLocationInOddLayer(centerX, nodeHeight + 50, nodeWidth + offsetX,
                             layerNum + 1 + 1, i, offsetX, nodeWidth);
                 }
 
@@ -83,7 +124,38 @@ namespace automats
 
                 newNodesLayer = new List<RichTextBox>();
             }
-            ActiveControl = null;
+        }
+
+        RichTextBox CreateNode(string labelText, (int nodeWidth, int nodeHeight) nodeSize, int widestLetter)
+        {
+            RichTextBox richTextBox = new RichTextBox()
+            {
+                ReadOnly = true,
+
+                Font = new Font("Verdana " + FontLogic.LetterWidth.ToString(), FontLogic.LetterHeight),
+
+                Text = labelText,
+
+                Height = nodeSize.nodeHeight,
+
+                Width = nodeSize.nodeWidth
+            };
+
+            richTextBox.MouseHover += OnMouseHover;
+
+            richTextBox.MouseLeave += (sender, args) =>
+            {
+                System.Threading.Thread.Sleep(300);
+
+                if (nodes != null)
+                    nodes.ForEach(node => node.BackColor = Color.White);
+            };
+
+            Controls.Add(richTextBox);
+
+            richTextBox.BringToFront();
+
+            return richTextBox;
         }
 
         int SortNodes(Control c1, Control c2)
@@ -107,36 +179,38 @@ namespace automats
             }
         }
 
-        RichTextBox CreateNode(string labelText)
+        void DrawLine(Control l1, Control l2)
         {
-            RichTextBox richTextBox = new RichTextBox()
+            globalGraphics.DrawLine(Pens.Black,
+                    new Point(l1.Location.X + l1.Width / 2, l1.Location.Y + l1.Height / 2),
+                    new Point(l2.Location.X + l2.Width / 2, l2.Location.Y + l2.Height / 2));
+        }
+
+
+        void ConnectNodes(Dictionary<int, List<int>> pairs, Dictionary<int, List<string>> executionData)
+        {
+            int lastLayerNum = executionData.Count - 1;
+
+            for (int layerNum = 0; layerNum < lastLayerNum; layerNum++)
             {
-                ReadOnly = true,
+                int lastElemNum = executionData.First().Value.Count;
 
-                Font = new Font("Verdana " + ((uint)(widestLetter - 3)).ToString(), widestLetter),
+                for (int elemNum = 0; elemNum < lastElemNum; elemNum++)
+                {
+                    DrawModellingDetails(nodes[layerNum * lastElemNum + elemNum], nodes[(layerNum + 1) * lastElemNum + elemNum - 1], receivedData[layerNum + 1][elemNum]);
+                }
+            }
+        }
 
-                Text = labelText,
+        void DrawModellingDetails(Control l1, Control l2, string parsedConfiguration)
+        {
+            var parsedData = parsedConfiguration.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
-                Height = nodeHeight,
+            globalGraphics.DrawString(parsedData[1], l1.Font, Brushes.Black,
+                l1.Location.X + (l1.Width / 2 - 21), l1.Location.Y + 3 * l1.Height / 2);
 
-                Width = nodeWidth
-            };
-
-            richTextBox.MouseHover += OnMouseHover;
-
-            richTextBox.MouseLeave += (sender, args) =>
-            {
-                System.Threading.Thread.Sleep(300);
-
-                if (nodes != null)
-                    nodes.ForEach(node => node.BackColor = Color.White);
-            };
-
-            Controls.Add(richTextBox);
-
-            richTextBox.BringToFront();
-
-            return richTextBox;
+            globalGraphics.DrawString(parsedData[2], l1.Font, Brushes.Black,
+                l1.Location.X + (l1.Width / 2), l1.Location.Y + 3 * l1.Height / 2);
         }
 
         void OnMouseHover(object sender, EventArgs args)
@@ -147,7 +221,7 @@ namespace automats
 
                 (sender as RichTextBox).BackColor = Color.Green;
 
-                var ancestorNum = 1;
+                int ancestorNum = 0;
 
                 foreach (var pairSet in pairsToConnect)
                 {
@@ -159,21 +233,16 @@ namespace automats
                     }
                 }
 
-                if (N != 1)
+                if (ancestorNum > 0)
                     OnMouseHover(nodes[ancestorNum - 1], EventArgs.Empty);
-                }
+
+                return;
+            }
         }
 
         private void Form4_Resize(object sender, EventArgs e)
         {
             pictureBox1.Size = Size;
-        }
-
-        void DrawLine(Control l1, Control l2)
-        {
-            globalGraphics.DrawLine(Pens.Black,
-                    new Point(l1.Location.X + l1.Width / 2, l1.Location.Y + l1.Height / 2),
-                    new Point(l2.Location.X + l2.Width / 2, l2.Location.Y + l2.Height / 2));
         }
 
         private void Form4_Scroll(object sender, ScrollEventArgs e)
@@ -192,6 +261,9 @@ namespace automats
             globalGraphics = e.Graphics;
 
             ConnectNodes(pairsToConnect);
+
+            if (executionType == ExecutionType.Modeling)
+                ConnectNodes(pairsToConnect, receivedData);
         }
 
         private void pictureBox1_SizeChanged(object sender, EventArgs e)
@@ -210,25 +282,23 @@ namespace automats
             {
                 if (e.KeyCode == Keys.OemMinus)
                 {
-                    if (widestLetter > 1)
-                        widestLetter--;
+                    FontLogic.ReduceLetterWidth();
 
-                    if (heighestLetter > 2)
-                        heighestLetter--;
+                    FontLogic.ReduceLetterHeight();
                 }
                 if (e.KeyCode == Keys.Oemplus)
                 {
-                    if (widestLetter < 18)
-                        widestLetter++;
+                    FontLogic.EnlargeLetterWidth();
 
-                    if (heighestLetter < 30)
-                        heighestLetter++;
+                    FontLogic.EnlargeLetterHeight();
                 }
             }
 
             nodes.ForEach(node => Controls.Remove(node));
 
             Form4_Load(this, EventArgs.Empty);
+
+            Refresh();
         }
     }
 }

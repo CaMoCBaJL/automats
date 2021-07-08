@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Collections.Generic;
+using Entities;
 
 namespace AutomatExperiments
 {
@@ -113,8 +114,8 @@ namespace AutomatExperiments
                             SigmaSet newSet = new SigmaSet();
 
                             foreach (var condition in conditionSet)
-                                newSet.Add(AutomatFunctions.Operations.Lambda(outputTable, condition, inputSignal),
-                                    AutomatFunctions.Operations.Delta(conditionTable, condition, inputSignal));
+                                newSet.Add(Automat.AutomatFunction<string>(outputTable, condition - 1, inputSignal),
+                                    Automat.AutomatFunction<int>(conditionTable, condition - 1, inputSignal));
 
                             newGroup.AddElement(newSet);
                         }

@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace automats
+namespace Entities
 {
     public enum ExecutionType
     {
+        None,
         Modeling,
         Experiment
     }

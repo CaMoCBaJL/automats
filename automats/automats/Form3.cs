@@ -4,14 +4,16 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Entities;
+using CommonLogic;
 
-namespace automats
+namespace PresentationLayer
 {
     public partial class Form3 : Form
     {
         bool status = false;
 
-        List<AutOptions> automats = new List<AutOptions>();
+        List<AutOptions> PresentationLayer = new List<AutOptions>();
 
         List<AutOptions> groupsElems = new List<AutOptions>();
 
@@ -35,16 +37,16 @@ namespace automats
 
         public Form3(Form f) => InitializeComponent();
 
-        void AddAutomats(List<AutOptions> automats)
+        void AddAutomats(List<AutOptions> PresentationLayer)
         {
-            foreach (AutOptions item in automats)
+            foreach (AutOptions item in PresentationLayer)
             {
                 AutOptions.ResetAutCounter();
 
                 Label l = item.Label;
                 Controls.Add(l);
                 l.BringToFront();
-                automats.Add(new AutOptions(l, item.DataFile, item.InputSignals, item.StartCondition, item.OutputSignals));
+                PresentationLayer.Add(new AutOptions(l, item.DataFile, item.InputSignals, item.StartCondition, item.OutputSignals));
             }
         }
 
@@ -59,9 +61,9 @@ namespace automats
 
         void DrawConsistentConnection(Graphics g, List<Label> currentGroup, List<Label> previousGroup, int offsetX)
         {
-            var prevGroupCenter = Operations.GetCentralPoint(previousGroup);
+            var prevGroupCenter = DrawingLogic.GetCentralPoint(previousGroup, labelWidth, offsetX);
 
-            var curGroupCenter = Operations.GetCentralPoint(currentGroup);
+            var curGroupCenter = DrawingLogic.GetCentralPoint(currentGroup, labelWidth, offsetX);
 
             if (currentGroup.Count == 1 && previousGroup.Count == 1)
                 g.DrawLine(Pens.Black,
@@ -114,7 +116,7 @@ namespace automats
 
         void AutsSortByGroups()
         {
-            List<AutOptions> auts = new List<AutOptions>(automats);
+            List<AutOptions> auts = new List<AutOptions>(PresentationLayer);
 
             auts.Sort((l1, l2) =>
             {
@@ -163,15 +165,17 @@ namespace automats
         {
             AutsSortByGroups();
 
+            var drawer = new DrawingLogic();
+
             for (int j = 0; j < groups.Count; j++)
             {
                 if (j > 0)
-                    DrawConsistentConnection(globalGraphics, Operations.GetGroupLabels(j, groups, groupsElems),
-                        Operations.GetGroupLabels(j - 1, groups, groupsElems), -offset);
+                    DrawConsistentConnection(globalGraphics, drawer.GetGroupLabels(j, groups, groupsElems),
+                        drawer.GetGroupLabels(j - 1, groups, groupsElems), -offset);
 
-                DrawPrallelConnection(globalGraphics, Operations.GetGroupLabels(j, groups, groupsElems), - offset);
+                DrawPrallelConnection(globalGraphics, drawer.GetGroupLabels(j, groups, groupsElems), - offset);
 
-                DrawPrallelConnection(globalGraphics, Operations.GetGroupLabels(j, groups, groupsElems), labelWidth + offset);
+                DrawPrallelConnection(globalGraphics, drawer.GetGroupLabels(j, groups, groupsElems), labelWidth + offset);
             }
         }
 
@@ -206,7 +210,7 @@ namespace automats
                 }
             }
             
-            Operations.ShowMessage("indx " + indx + "\n groupNum " + groupNum);
+            MessageBox.Show("indx " + indx + "\n groupNum " + groupNum);
 
             bool isPrevGroupWorked = true;
 
@@ -233,9 +237,9 @@ namespace automats
                     for (int k = firstIndx; k < firstIndx + groups[groupNum - 1]; k++)
                         prevGroupYs.Append(groupsElems[k].OutputSignals);
                     autIndx = int.Parse(l.Text.Substring(3, l.Text.Length - 3)) - 1;
-                    AutOptions a = automats[autIndx];
+                    AutOptions a = PresentationLayer[autIndx];
                     a.InputSignals = prevGroupYs;
-                    automats[autIndx] = a;
+                    PresentationLayer[autIndx] = a;
                 }
 
                 if (indx < groups[0])
@@ -248,15 +252,15 @@ namespace automats
                 StringBuilder stringa = new StringBuilder();
 
                 if (autIndx != -1) 
-                    stringa = automats[autIndx].InputSignals;
+                    stringa = PresentationLayer[autIndx].InputSignals;
 
                 this.Hide();
 
-                new Form1(autLvl, automats.Find(s => s.Label == l).DataFile, automats,
+                new Form1(autLvl, PresentationLayer.Find(s => s.Label == l).DataFile, PresentationLayer,
                     (l.Text.Last() - '0') - 1, stringa).Show();
             }
             else
-                Operations.ShowMessage("Предыдущая группа не работала!");
+                MessageBox.Show("Предыдущая группа не работала!");
         }
 
         public void LabelMouseMove(object sender,MouseEventArgs e)
@@ -283,7 +287,7 @@ namespace automats
             l1.MouseMove += LabelMouseMove;
             l1.MouseUp += LabelMouseUp;
             l1.MouseDoubleClick += LabelMouseDoubleClick;
-            automats.Add(new AutOptions(l1, string.Empty, new StringBuilder(), new StringBuilder(), new StringBuilder()));
+            PresentationLayer.Add(new AutOptions(l1, string.Empty, new StringBuilder(), new StringBuilder(), new StringBuilder()));
             Controls.Add(l1);
             l1.BringToFront();
         }
