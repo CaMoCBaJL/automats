@@ -1,7 +1,7 @@
 ﻿using BLInterfaces;
 using DalInterfaces;
 
-namespace DataProvidingLogic
+namespace BuisnessLogic
 {
     public class AutomatChainModellingLogic : IAutomatChainModellingLogic
     {

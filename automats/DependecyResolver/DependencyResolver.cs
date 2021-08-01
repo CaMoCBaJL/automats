@@ -1,7 +1,7 @@
 ﻿using DataAccessLayer;
-using DataProvidingLogic;
 using DalInterfaces;
 using BLInterfaces;
+using BuisnessLogic;
 
 namespace Dependencies
 {
@@ -26,8 +26,12 @@ namespace Dependencies
 
         IAutomatChainModellingDAL ModellingDAL => new AutomatChainModellingDAL();
 
-        public IDataProviderLogic BL => new BuisnessLogic(DAL);
+        public IDataProviderLogic BL => new DataProvidingLogic(DAL);
 
-        public IChainModellingLogic ChainModellingBL => new AutomatChainModellingLogic(ModellingDAL);
+        public IAutomatChainModellingLogic ChainModellingBL => new AutomatChainModellingLogic(ModellingDAL);
+
+        public IAutomatModellingLogic AutomatModellingBL => new ModellingLogic();
+
+        public IAutomatExperimentLogic AutomatExperimentLogic => new ExperimentLogic();
     }
 }

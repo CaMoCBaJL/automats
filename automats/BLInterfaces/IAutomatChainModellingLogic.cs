@@ -1,6 +1,6 @@
 ﻿namespace BLInterfaces
 {
-    public interface IChainModellingLogic
+    public interface IAutomatChainModellingLogic
     {
         void StartAutomatChainModelling();
 

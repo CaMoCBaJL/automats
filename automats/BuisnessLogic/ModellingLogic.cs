@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using Entities;
 using System.Linq;
-using DataAccessLayer;
+using BLInterfaces;
 
-namespace AutomatModelling
+namespace BuisnessLogic
 {
-    public class ModellingLogic
+    public class ModellingLogic : IAutomatModellingLogic
     {
         public Dictionary<int, List<AutomatConfiguration>> ModelTheAutomatWork(
             List<int> startCondtions, List<string> inputSignals, Automat automat, int iterationsNum)

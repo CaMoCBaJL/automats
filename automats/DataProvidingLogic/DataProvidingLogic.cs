@@ -4,11 +4,11 @@ using System.Collections.Generic;
 
 namespace DataProvidingLogic
 {
-    public class BuisnessLogic : IDataProviderLogic
+    public class DataProvidingLogic : IDataProviderLogic
     {
         IDataProvider _DAL;
 
-        public BuisnessLogic(IDataProvider dal) => _DAL = dal;
+        public DataProvidingLogic(IDataProvider dal) => _DAL = dal;
 
 
         public List<string> GetData(string path)

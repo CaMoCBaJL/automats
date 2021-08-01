@@ -1,20 +1,13 @@
 ﻿using System.Linq;
 using System.Collections.Generic;
 using Entities;
+using BLInterfaces;
 
-namespace AutomatExperiments
+namespace BuisnessLogic
 {
-    public class Experiments
+    public class ExperimentLogic : IAutomatExperimentLogic
     {
-        public enum ExperimentType
-        {
-            None,
-            Diagnostic,
-            Setting//установочный
-        }
-
-
-        public static Dictionary<int, List<AGroup>> StartTheExperiment(List<int> initialConditionsSet,
+        public Dictionary<int, List<AGroup>> StartTheExperiment(List<int> initialConditionsSet,
             int[,] conditionTable, string[,] outputTable, ExperimentType experimentType)
         {
             Dictionary<int, List<AGroup>> result = new Dictionary<int, List<AGroup>>();
@@ -60,7 +53,7 @@ namespace AutomatExperiments
             }
         }
 
-        static List<AGroup> TrimTheTree(List<AGroup> penultimateLayer,List<AGroup> lastLayer, ExperimentType experimentType)
+        List<AGroup> TrimTheTree(List<AGroup> penultimateLayer,List<AGroup> lastLayer, ExperimentType experimentType)
         {
             switch (experimentType)
             {
@@ -81,7 +74,7 @@ namespace AutomatExperiments
 
         }
 
-        static AGroup UpdateSigmaSets(AGroup group)
+        AGroup UpdateSigmaSets(AGroup group)
         {
             AGroup newAgroup = new AGroup(group.AncestorAGroup);
 
@@ -94,7 +87,7 @@ namespace AutomatExperiments
             return newAgroup;
         }
 
-        static List<AGroup> IterateTheExperiment(List<AGroup> groups,
+        List<AGroup> IterateTheExperiment(List<AGroup> groups,
             int[,] conditionTable, string[,] outputTable)
         {
             List<AGroup> iterataionResult = new List<AGroup>();

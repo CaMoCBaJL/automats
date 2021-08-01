@@ -41,13 +41,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Experiments.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AutomatFunctions\Entities.csproj">
       <Project>{0312b0ce-cbd9-40fc-8fe6-e2e43340568b}</Project>
       <Name>Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BLInterfaces\BLInterfaces.csproj">
+      <Project>{6bf7340d-4165-4834-ad3e-b8ca741617b6}</Project>
+      <Name>BLInterfaces</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
