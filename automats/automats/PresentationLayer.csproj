@@ -120,21 +120,21 @@
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AutomatExperiments\AutomatExperiments.csproj">
-      <Project>{5835c32e-ff91-48ef-8970-e32e53c8491b}</Project>
-      <Name>AutomatExperiments</Name>
-    </ProjectReference>
     <ProjectReference Include="..\AutomatFunctions\Entities.csproj">
       <Project>{0312b0ce-cbd9-40fc-8fe6-e2e43340568b}</Project>
       <Name>Entities</Name>
     </ProjectReference>
-    <ProjectReference Include="..\AutomatModelling\AutomatModelling.csproj">
-      <Project>{406dda0c-0d0a-48b1-a6df-a4660485431c}</Project>
-      <Name>AutomatModelling</Name>
+    <ProjectReference Include="..\BLInterfaces\BLInterfaces.csproj">
+      <Project>{6bf7340d-4165-4834-ad3e-b8ca741617b6}</Project>
+      <Name>BLInterfaces</Name>
     </ProjectReference>
     <ProjectReference Include="..\CommonLogic\CommonLogic.csproj">
       <Project>{c6258d12-26c4-4f2d-b0eb-cef14365f75b}</Project>
       <Name>CommonLogic</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DependecyResolver\Dependencies.csproj">
+      <Project>{d7c5f302-319f-4d7a-9b60-d183335c0b61}</Project>
+      <Name>Dependencies</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
