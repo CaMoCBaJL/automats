@@ -167,11 +167,10 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.label4.Font = new System.Drawing.Font("Lucida Calligraphy", 12F, System.Drawing.FontStyle.Bold);
             this.label4.Location = new System.Drawing.Point(470, 300);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(181, 29);
+            this.label4.Size = new System.Drawing.Size(179, 27);
             this.label4.TabIndex = 23;
             this.label4.Text = "Число итераций";
             this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;

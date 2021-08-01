@@ -44,7 +44,6 @@ namespace AutomatModelling
                             Automat.AutomatFunction<string>(automat.LambdaTable, result[condition][result[condition].Count - 1].Condition - 1,
                             inputSignalsCollection.IndexOf(inputSignals[i]))));
                     }
-
                 }
             }
 

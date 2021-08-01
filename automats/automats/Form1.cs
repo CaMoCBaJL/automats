@@ -23,7 +23,6 @@ namespace PresentationLayer
         List<AutOptions> autG = new List<AutOptions>();
         bool isAutFirst;
         int automatNum = 0;
-        PictureBox pictureBox1;
         ExecutionType execType;
 
 
@@ -123,75 +122,6 @@ namespace PresentationLayer
                 UpdateUserInterface(currentAutomat);
         }
 
-        void UpdateUserInterface(Automat automat)
-        {
-            int condNum = automat.DeltaTable.GetLength(0);
-
-            int inputNum = automat.DeltaTable.GetLength(1);
-
-            int outputNum = automat.LambdaTable.GetLength(1);
-
-            CalculateElementsSizes(condNum, inputNum, outputNum);
-
-            UpdateRichTextBox3(condNum, inputNum, outputNum);
-
-            UpdateRichTextBox4(inputNum, outputNum);
-
-            if (execType == ExecutionType.Experiment)
-            {
-                SetExperimentInterface();
-            }
-        }
-
-        void CalculateElementsSizes(int condNum, int inputNum, int outputNum)
-        {
-            if (FontLogic.columnWidth * (inputNum + outputNum + 1) > 235)
-                richTextBox3.Width = 240;
-            else
-                richTextBox3.Width = FontLogic.columnWidth * (inputNum + outputNum + 1);
-
-            if ((condNum + 1) * 48 > 280)
-                richTextBox3.Height = 280;
-            else
-                richTextBox3.Height = (condNum + 1) * 48;
-        }
-
-        void UpdateRichTextBox3(int condNum, int inputNum, int outputNum)
-        {
-            StringBuilder richTextBox3Content = new StringBuilder();
-
-            for (int i = 0; i < condNum; i++)
-            {
-                if (i > 0)
-                    richTextBox3Content.Append(Environment.NewLine);
-
-                richTextBox3Content.Append(i + 1);
-
-                for (int j = 0; j < inputNum; j++)
-                    richTextBox3Content.Append("\t" + currentAutomat.DeltaTable[i, j]);
-
-                for (int j = 0; j < outputNum; j++)
-                    richTextBox3Content.Append("\t" + currentAutomat.LambdaTable[i, j]);
-            }
-
-            richTextBox3.Text = richTextBox3Content.ToString();
-
-
-        }
-
-        void UpdateRichTextBox4(int inputNum, int outputNum)
-        {
-            richTextBox4.Width = richTextBox3.Location.X + richTextBox3.Width - richTextBox4.Location.X;
-
-            StringBuilder richTextBox4Content = new StringBuilder();
-
-            richTextBox4Content.Append(AddSignalIndication(inputNum));
-
-            richTextBox4Content.Append(AddSignalIndication(outputNum));
-
-            richTextBox4.Text = richTextBox4Content.ToString();
-        }
-
         void SetExperimentInterface()
         {
             label2.Location = new Point(richTextBox3.Location.X + richTextBox3.Width + 30, richTextBox3.Location.Y);
@@ -208,28 +138,8 @@ namespace PresentationLayer
 
         }
 
-        string AddSignalIndication(int number)
-        {
-            StringBuilder str = new StringBuilder();
-
-            foreach (var item in Enumerable.Range(0, number))
-            {
-                str.Append(item);
-
-                str.Append("\t");
-            }
-
-            return str.ToString();
-        }
-
         private void Form1_Resize(object sender, EventArgs e)
         {
-            if (pictureBox1 != null)
-            {
-                pictureBox1.Size = new Size((ClientRectangle.Width / 10) * 6,
-                        (ClientRectangle.Height / 10) * 6);
-            }
-
             DataShow();
 
             Refresh();
@@ -317,32 +227,6 @@ namespace PresentationLayer
             }
 
             return result.ToList();
-        }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-            OpenFileDialog k = new OpenFileDialog();
-
-            k.Filter = "Text Files(*.txt)|*.txt";
-
-            if (k.ShowDialog() == DialogResult.OK)
-            {
-                fileName = k.FileName;
-
-                currentAutomat = new Logic().GetAutomatTables(fileName);
-
-                if (autG.Count > 0)
-                {
-                    AutOptions a = autG[automatNum];
-                    a.DataFile = fileName;
-                    autG[automatNum] = a;
-                }
-
-                if (!isAutFirst)
-                    button1_Click(sender, EventArgs.Empty);
-
-                UpdateUserInterface(currentAutomat);
-            }
         }
 
         private void button3_Click(object sender, EventArgs e)

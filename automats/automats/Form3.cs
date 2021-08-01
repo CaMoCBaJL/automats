@@ -74,7 +74,8 @@ namespace PresentationLayer
                     previousGroup[0].Location.Y + previousGroup[0].Height / 2));
 
             else if (currentGroup.Count == 1 && previousGroup.Count > 1)
-                    g.DrawLine(Pens.Black, prevGroupCenter,
+                    g.DrawLine(Pens.Black, 
+                    new Point(prevGroupCenter.X + 2 * offset, prevGroupCenter.Y),
                     new Point(currentGroup[0].Location.X, currentGroup[0].Location.Y
                     + currentGroup[0].Height / 2));
             
@@ -82,11 +83,13 @@ namespace PresentationLayer
             { 
                 g.DrawLine(Pens.Black,
                     new Point(currentGroup[0].Location.X + offsetX , curGroupCenter.Y),
-                    new Point(previousGroup[0].Location.X + previousGroup[0].Width,
+                    new Point(previousGroup[0].Location.X + previousGroup[0].Width + offsetX,
                     previousGroup[0].Location.Y + previousGroup[0].Height / 2));
             }
             else
-                g.DrawLine(Pens.Black, prevGroupCenter, new Point(curGroupCenter.X - labelWidth - 2 * offset, curGroupCenter.Y));
+                g.DrawLine(Pens.Black,
+                    new Point(prevGroupCenter.X + 2 * offset, prevGroupCenter.Y),
+                    new Point(curGroupCenter.X - labelWidth, curGroupCenter.Y));
         }
 
         void DrawPrallelConnection(Graphics g, List<Label> labels, int offsetX)
@@ -280,7 +283,7 @@ namespace PresentationLayer
             Label l1 = new Label();
             l1.TextAlign = ContentAlignment.MiddleCenter;
             l1.Font = new Font("Verdana; 42pt", 26);
-            l1.Text = "ABT" + (AutOptions.AutNum+1);
+            l1.Text = "A" + (AutOptions.AutNum+1);
             l1.Location = new Point(100, 100);
             l1.Size = new Size(labelWidth, labelHeight);
             l1.MouseDown += LabelMouseDown;

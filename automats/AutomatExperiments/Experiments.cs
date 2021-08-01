@@ -94,7 +94,7 @@ namespace AutomatExperiments
             return newAgroup;
         }
 
-        static List<AGroup>  IterateTheExperiment(List<AGroup> groups,
+        static List<AGroup> IterateTheExperiment(List<AGroup> groups,
             int[,] conditionTable, string[,] outputTable)
         {
             List<AGroup> iterataionResult = new List<AGroup>();
@@ -114,8 +114,8 @@ namespace AutomatExperiments
                             SigmaSet newSet = new SigmaSet();
 
                             foreach (var condition in conditionSet)
-                                newSet.Add(Automat.AutomatFunction<string>(outputTable, condition - 1, inputSignal),
-                                    Automat.AutomatFunction<int>(conditionTable, condition - 1, inputSignal));
+                                newSet.Add(Automat.AutomatFunction(outputTable, condition - 1, inputSignal),
+                                    Automat.AutomatFunction(conditionTable, condition - 1, inputSignal));
 
                             newGroup.AddElement(newSet);
                         }

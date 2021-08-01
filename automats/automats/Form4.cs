@@ -27,6 +27,8 @@ namespace PresentationLayer
         {
             InitializeComponent();
 
+            Text = "Результат моделирования";
+
             executionType = execType;
 
             MouseWheel += (sender, args) => OnScroll(new ScrollEventArgs(ScrollEventType.ThumbPosition, Location.Y + 50));
@@ -40,6 +42,8 @@ namespace PresentationLayer
         public Form4(Dictionary<int, List<AGroup>> processedData, ExecutionType execType)
         {
             InitializeComponent();
+
+            Text = "Результат эксперимента";
 
             executionType = execType;
 
@@ -180,11 +184,10 @@ namespace PresentationLayer
         }
 
         void DrawLine(Control l1, Control l2)
-        {
-            globalGraphics.DrawLine(Pens.Black,
+        =>globalGraphics.DrawLine(Pens.Black,
                     new Point(l1.Location.X + l1.Width / 2, l1.Location.Y + l1.Height / 2),
                     new Point(l2.Location.X + l2.Width / 2, l2.Location.Y + l2.Height / 2));
-        }
+        
 
 
         void ConnectNodes(Dictionary<int, List<int>> pairs, Dictionary<int, List<string>> executionData)
@@ -206,11 +209,11 @@ namespace PresentationLayer
         {
             var parsedData = parsedConfiguration.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
-            globalGraphics.DrawString(parsedData[1], l1.Font, Brushes.Black,
-                l1.Location.X + (l1.Width / 2 - 21), l1.Location.Y + 3 * l1.Height / 2);
-
             globalGraphics.DrawString(parsedData[2], l1.Font, Brushes.Black,
-                l1.Location.X + (l1.Width / 2), l1.Location.Y + 3 * l1.Height / 2);
+                l1.Location.X + (l1.Width / 2 - 21), l1.Location.Y + l1.Height  + 5);
+
+            globalGraphics.DrawString(parsedData[1], l1.Font, Brushes.Black,
+                l1.Location.X + (l1.Width / 2), l1.Location.Y + l1.Height + 5);
         }
 
         void OnMouseHover(object sender, EventArgs args)

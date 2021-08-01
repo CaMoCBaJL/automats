@@ -55,7 +55,6 @@ namespace PresentationLayer
             this.Controls.Add(this.pictureBox1);
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "Form4";
-            this.Text = "Результат эксперимента";
             this.Load += new System.EventHandler(this.Form4_Load);
             this.Scroll += new System.Windows.Forms.ScrollEventHandler(this.Form4_Scroll);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form4_KeyDown);

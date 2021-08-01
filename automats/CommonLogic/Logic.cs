@@ -27,7 +27,7 @@ namespace CommonLogic
         {
             Dictionary<int, List<string>> result = new Dictionary<int, List<string>>();
 
-            for (int i = 0; i< processedData.First().Value.Count; i++)
+            for (int i = 0; i < processedData.First().Value.Count; i++)
             {
                 List<string> currentLayer = new List<string>();
 
@@ -61,7 +61,7 @@ namespace CommonLogic
             return result;
         }
 
-        //TODO: Test the code!!!
+        //todo Test the code!!!
 
         public Dictionary<int, List<int>> FindAllPairsToConnect(Dictionary<int, List<AutomatConfiguration>> modellingResult)
         {
@@ -71,7 +71,7 @@ namespace CommonLogic
 
             for (int i = 0; i < lastElem - modellingResult.Keys.Count; i++)
             {
-                result.Add(i + 1, new List<int> ( new int[]{ i + 1 + modellingResult.Keys.Count} ));
+                result.Add(i + 1, new List<int>(new int[] { i + 1 + modellingResult.Keys.Count }));
             }
 
             return result;
@@ -106,5 +106,37 @@ namespace CommonLogic
 
             return result;
         }
+
+        public List<string> GenerateInputStrings(int alphabetDegree, SortedSet<int> alphabet)
+        {
+            List<string> result = new List<string>();
+
+            alphabet.ToList().ForEach((signal) => result.Add(signal.ToString()));
+
+            int counter = 1;
+
+
+            while (counter < alphabetDegree)
+            {
+                int leftBorder = (int)Math.Pow(alphabet.Count, counter - 1);
+
+                int rightBorder = (int)Math.Pow(alphabet.Count, counter);
+
+                List<string> layer = new List<string>();
+
+                for (int i = leftBorder; i < rightBorder; i++)
+                {
+                    foreach (var symbol in alphabet)
+                    {
+                        layer.Add(result[i] + symbol.ToString());
+                    }
+                }
+
+                counter++;
+            }
+
+            return result;
+        }
+
     }
 }
