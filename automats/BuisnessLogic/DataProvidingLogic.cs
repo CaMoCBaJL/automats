@@ -2,6 +2,7 @@
 using DalInterfaces;
 using System.Collections.Generic;
 using System.Text;
+using Entities;
 
 namespace BuisnessLogic
 {
@@ -11,15 +12,17 @@ namespace BuisnessLogic
 
         public DataProvidingLogic(IDataProvider dal) => _DAL = dal;
 
+        public bool AddAutomatData(string automatTablesFileName, string inputSignalsString, string outputSignalsString)
+               => _DAL.SaveAutomatWorkData(new ChainElementSettings(automatTablesFileName, inputSignalsString, outputSignalsString));
 
         public List<string> GetData(string path)
-        => _DAL.GetData(path);
+               => _DAL.GetData(path);
 
         public Dictionary<int, string> LoadAutomatChainAppearance()
         {
             Dictionary<int, string> result = new Dictionary<int, string>();
 
-            foreach(var dataItem in _DAL.DeserializeAutomatChain())
+            foreach (var dataItem in _DAL.DeserializeAutomatChain())
             {
                 result.Add(int.Parse(dataItem.Split()[0]), dataItem.Split()[1]);
             }

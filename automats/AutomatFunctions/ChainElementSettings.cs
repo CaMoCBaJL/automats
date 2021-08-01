@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
-namespace AutomatFunctions
+namespace Entities
 {
-    class ChainElementSettings
+    public class ChainElementSettings
     {
         [JsonProperty]
         public string AutomatDataFile { get; private set; }
@@ -18,9 +13,20 @@ namespace AutomatFunctions
         [JsonProperty]
         public string OutputSignalString { get; private set; }
 
+        [JsonProperty]
+        public string AutomatName { get; private set; }
 
         protected ChainElementSettings() { }
 
+        public ChainElementSettings(string automatTablesDataFileName, string inputSignalString, string outputSignalString, string automatName)
+        {
+            AutomatDataFile = automatTablesDataFileName;
 
+            InputSignalString = inputSignalString;
+
+            OutputSignalString = outputSignalString;
+
+            AutomatName = automatName;
+        }
     }
 }

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using DalInterfaces;
+using Entities;
+using Newtonsoft.Json;
 
 namespace DataAccessLayer
 {
@@ -18,6 +20,21 @@ namespace DataAccessLayer
 
         public List<string> GetData(string pathToFile) => File.ReadAllText(pathToFile).Split(new char[] { '\n', '\r' },
                 StringSplitOptions.RemoveEmptyEntries).ToList();
+
+        public bool SaveAutomatWorkData(ChainElementSettings automatData)
+        {
+            try
+            {
+                File.WriteAllText(PathConstants.automatChainModellingFolder + Path.DirectorySeparatorChar + automatData.AutomatName + ".json",
+                     JsonConvert.SerializeObject(automatData));
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
 
         public void SerializeAutomatChain(string data)
         {

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Entities;
 
 namespace DalInterfaces
 {
@@ -9,5 +10,7 @@ namespace DalInterfaces
         void SerializeAutomatChain(string data);
 
         IEnumerable<string> DeserializeAutomatChain();
+
+        bool SaveAutomatWorkData(ChainElementSettings automatData);
     }
 }
