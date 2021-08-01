@@ -1,21 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using Entities;
-using AutomatExperiments;
 using CommonLogic;
-using AutomatModelling;
+using Dependencies;
 
 namespace PresentationLayer
 {
     public partial class Form1 : Form
     {
-
-
         Automat currentAutomat;
         string fileName;
         List<string> inputSignalSet;
@@ -169,7 +165,7 @@ namespace PresentationLayer
                             if (!string.IsNullOrEmpty(textBox1.Text.Trim()))
                                 int.TryParse(textBox1.Text, out iterCounter);
 
-                            var data = new ModellingLogic().ModelTheAutomatWork(GetDistinctStartConditionsSet(),
+                            var data = DependencyResolver.Instance.AutomatModellingBL.ModelTheAutomatWork(GetDistinctStartConditionsSet(),
                                 richTextBox1.Text.Split(FontLogic.spaceToSplit, StringSplitOptions.RemoveEmptyEntries).ToList(),
                                 currentAutomat, iterCounter);
 
@@ -191,19 +187,19 @@ namespace PresentationLayer
                     {
                         if (radioButtonSetExp.Checked ^ radioButtonDiagnExp.Checked)
                         {
-                            Experiments.ExperimentType experimentType;
+                            ExperimentType experimentType;
 
                             if (radioButtonDiagnExp.Checked)
-                                experimentType = Experiments.ExperimentType.Diagnostic;
+                                experimentType = ExperimentType.Diagnostic;
                             else
-                                experimentType = Experiments.ExperimentType.Setting;
+                                experimentType = ExperimentType.Setting;
 
                             List<int> initialConditionsSet = new List<int>();
 
                             foreach (var item in textBox2.Text.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries))
                                 initialConditionsSet.Add(int.Parse(item));
 
-                            var data = Experiments.StartTheExperiment(
+                            var data = DependencyResolver.Instance.AutomatExperimentLogic.StartTheExperiment(
                                initialConditionsSet, currentAutomat.DeltaTable, currentAutomat.LambdaTable, experimentType);
 
                             new Form4(data, execType).Show();
