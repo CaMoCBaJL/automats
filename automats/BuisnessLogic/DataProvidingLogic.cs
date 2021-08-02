@@ -12,11 +12,11 @@ namespace BuisnessLogic
 
         public DataProvidingLogic(IDataProvider dal) => _DAL = dal;
 
-        public bool AddAutomatData(string automatTablesFileName, string inputSignalsString, string outputSignalsString)
-               => _DAL.SaveAutomatWorkData(new ChainElementSettings(automatTablesFileName, inputSignalsString, outputSignalsString));
+        public bool AddAutomatData(string automatTablesFileName, string inputSignalsString, string outputSignalsString, string automatName)
+               => _DAL.SaveAutomatWorkData(new ChainElementSettings(automatTablesFileName, inputSignalsString, outputSignalsString, automatName));
 
         public List<string> GetData(string path)
-               => _DAL.GetData(path);
+               => new List<string>(_DAL.GetData(path));
 
         public Dictionary<int, string> LoadAutomatChainAppearance()
         {

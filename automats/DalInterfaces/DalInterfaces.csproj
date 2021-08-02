@@ -45,5 +45,11 @@
     <Compile Include="IDataProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AutomatFunctions\Entities.csproj">
+      <Project>{0312b0ce-cbd9-40fc-8fe6-e2e43340568b}</Project>
+      <Name>Entities</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

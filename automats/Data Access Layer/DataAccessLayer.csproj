@@ -51,6 +51,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AutomatFunctions\Entities.csproj">
+      <Project>{0312b0ce-cbd9-40fc-8fe6-e2e43340568b}</Project>
+      <Name>Entities</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DalInterfaces\DalInterfaces.csproj">
       <Project>{174735b1-d004-48a3-89a6-b2dab19b2255}</Project>
       <Name>DalInterfaces</Name>

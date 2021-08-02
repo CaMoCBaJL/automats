@@ -11,6 +11,6 @@ namespace BLInterfaces
 
         Dictionary<int, string> LoadAutomatChainAppearance();
 
-        bool AddAutomatData(string automatTablesFileName, string inputSignalsString, string outputSignalsString);
+        bool AddAutomatData(string automatTablesFileName, string inputSignalsString, string outputSignalsString, string automatName);
     }
 }

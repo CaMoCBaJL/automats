@@ -57,12 +57,6 @@
     <Compile Include="SigmaSet.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Data Access Layer\DataAccessLayer.csproj">
-      <Project>{f3699319-6260-486e-bda6-069c407275ed}</Project>
-      <Name>DataAccessLayer</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
