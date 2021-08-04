@@ -33,9 +33,9 @@ namespace PresentationLayer
         public void retClick(object sender, EventArgs e)
         {
             if (!string.IsNullOrEmpty(AutomatName))
-                new Form3().Show();
+                new AutomatChainModellingForm().Show();
             else
-                new Form2().Show();
+                new Menu().Show();
 
             this.Hide();
         }
@@ -68,7 +68,7 @@ namespace PresentationLayer
                             DependencyResolver.Instance.AutomatModellingBL.CalculateOutputSignals(data), AutomatName))
                             MessageBox.Show(OperationResultIndicators.savingError);
 
-                        new Form4(data, ExecutionType.Modeling).Show();
+                        new DataVisualization(data, ExecutionType.Modeling).Show();
                     }
                     catch (Exception)
                     {
@@ -84,7 +84,7 @@ namespace PresentationLayer
         {
             this.Hide();
 
-            new Form2().Show();
+            new Menu().Show();
         }
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e) => Environment.Exit(0);

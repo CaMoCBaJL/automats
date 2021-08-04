@@ -9,7 +9,7 @@ using CommonLogic;
 
 namespace PresentationLayer
 {
-    public partial class Form3 : Form
+    public partial class AutomatChainModellingForm : Form
     {
         bool status = false;
 
@@ -28,14 +28,14 @@ namespace PresentationLayer
         public const int offset = 40; 
 
 
-        public Form3(List<AutOptions> auts)
+        public AutomatChainModellingForm(List<AutOptions> auts)
         {
             InitializeComponent();
 
             AddAutomats(auts);
         }
 
-        public Form3() => InitializeComponent();
+        public AutomatChainModellingForm() => InitializeComponent();
 
         void AddAutomats(List<AutOptions> PresentationLayer)
         {
@@ -299,7 +299,7 @@ namespace PresentationLayer
         {
             this.Hide();
 
-            new Form2().Show();
+            new Menu().Show();
         }
 
         private void Form3_FormClosed(object sender, FormClosedEventArgs e) => Environment.Exit(0);

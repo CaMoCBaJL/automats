@@ -36,7 +36,7 @@ namespace CommonLogic
             return labels;
         }
 
-        static public int FindWidestNode(Dictionary<int, List<string>> data, ExecutionType executionType)
+        public int FindWidestNode(Dictionary<int, List<string>> data, ExecutionType executionType)
         {
             int nodeWidth = 0;
 
@@ -54,7 +54,7 @@ namespace CommonLogic
             return nodeWidth;
         }
 
-        static public (int nodeWidth, int nodeHeight) FindNodeSize(List<string> dataLayer, ExecutionType executionType)
+        public (int nodeWidth, int nodeHeight) FindNodeSize(List<string> dataLayer, ExecutionType executionType)
         {
             int maxSymbolsNum = 0;
 
@@ -94,7 +94,7 @@ namespace CommonLogic
 
         static int CalculateFontHeight(int linesAmount) => (int)(linesAmount * FontLogic.LetterHeight * FontLogic.heightScaleCoef) + 13;
 
-        static void AlignTheGroupByTheXAxis(List<Label> group)
+        void AlignTheGroupByTheXAxis(List<Label> group)
         {
             if (group.Count > 1)
                 for (int i = 1; i < group.Count; i++)
@@ -103,7 +103,7 @@ namespace CommonLogic
                 }
         }
 
-        static public Point GetCentralPoint(List<Label> group, int labelWidth, int offset)
+        public Point GetCentralPoint(List<Label> group, int labelWidth, int offset)
         {
             int topLine = group[0].Location.Y + group[0].Height / 2;
 

@@ -4,9 +4,9 @@ using Entities;
 
 namespace PresentationLayer
 {
-    public partial class Form2 : Form
+    public partial class Menu : Form
     {
-        public Form2()
+        public Menu()
         {
             InitializeComponent();
         }
@@ -14,20 +14,20 @@ namespace PresentationLayer
         private void button1_Click(object sender, EventArgs e)
         {
             this.Hide();
-            new ModellingForm(true, string.Empty, ExecutionType.Modeling).Show();
+            new ModellingForm().Show();
 
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
             this.Hide();
-            new Form3(this).Show();
+            new AutomatChainModellingForm().Show();
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
             this.Hide();
-            new ExperimentForm(true, string.Empty, ExecutionType.Experiment).Show();
+            new ExperimentForm().Show();
 
         }
 

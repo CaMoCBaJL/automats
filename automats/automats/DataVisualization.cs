@@ -8,7 +8,7 @@ using CommonLogic;
 
 namespace PresentationLayer
 {
-    public partial class Form4 : Form
+    public partial class DataVisualization : Form
     {
         ExecutionType executionType;
 
@@ -22,7 +22,7 @@ namespace PresentationLayer
         Graphics globalGraphics;
 
 
-        public Form4(Dictionary<int, List<AutomatConfiguration>> processedData, ExecutionType execType)
+        public DataVisualization(Dictionary<int, List<AutomatConfiguration>> processedData, ExecutionType execType)
         {
             InitializeComponent();
 
@@ -38,7 +38,7 @@ namespace PresentationLayer
         }
 
 
-        public Form4(Dictionary<int, List<AGroup>> processedData, ExecutionType execType)
+        public DataVisualization(Dictionary<int, List<AGroup>> processedData, ExecutionType execType)
         {
             InitializeComponent();
 
@@ -61,7 +61,7 @@ namespace PresentationLayer
 
             globalGraphics = pictureBox1.CreateGraphics();
 
-            int widestNode = DrawingLogic.FindWidestNode(receivedData, executionType);
+            int widestNode = new DrawingLogic().FindWidestNode(receivedData, executionType);
 
             new DrawingLogic().FindDiagrammCenter(receivedData, out int centerX, widestNode, ClientRectangle);
 
@@ -99,7 +99,7 @@ namespace PresentationLayer
 
             for (int layerNum = 0; layerNum < data.Count; layerNum++)
             {
-                var nodeSize = DrawingLogic.FindNodeSize(data[layerNum], executionType);
+                var nodeSize = new DrawingLogic().FindNodeSize(data[layerNum], executionType);
 
                 int nodeWidth = nodeSize.nodeWidth;
 

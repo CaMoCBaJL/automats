@@ -1,7 +1,7 @@
 ﻿
 namespace PresentationLayer
 {
-    partial class Form4
+    partial class DataVisualization
     {
         /// <summary>
         /// Обязательная переменная конструктора.

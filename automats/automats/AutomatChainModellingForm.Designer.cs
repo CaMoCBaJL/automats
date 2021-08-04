@@ -1,6 +1,6 @@
 ﻿namespace PresentationLayer
 {
-    partial class Form3
+    partial class AutomatChainModellingForm
     {
         /// <summary>
         /// Required designer variable.

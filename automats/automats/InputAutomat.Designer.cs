@@ -101,9 +101,9 @@ namespace PresentationLayer
 
         #endregion
 
-        private System.Windows.Forms.Button insertAut;
-        private System.Windows.Forms.Label tableLabel;
-        private System.Windows.Forms.RichTextBox richTextBox4;
-        private System.Windows.Forms.RichTextBox richTextBox3;
+        protected System.Windows.Forms.Button insertAut;
+        protected System.Windows.Forms.Label tableLabel;
+        protected System.Windows.Forms.RichTextBox richTextBox4;
+        protected System.Windows.Forms.RichTextBox richTextBox3;
     }
 }
