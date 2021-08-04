@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using CommonConstants;
 using Entities;
 
 namespace CommonLogic
@@ -76,7 +75,7 @@ namespace CommonLogic
                         if (linesCount > maxLinesNum)
                             maxLinesNum = linesCount;
 
-                        foreach (var sigmaSet in aGroup.Split(FontLogic.newLineToSplit, StringSplitOptions.RemoveEmptyEntries))
+                        foreach (var sigmaSet in aGroup.Split(SplitTemplates.newLineToSplit, StringSplitOptions.RemoveEmptyEntries))
                         {
                             if (sigmaSet.Length > maxSymbolsNum)
                                 maxSymbolsNum = sigmaSet.Length;

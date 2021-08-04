@@ -2,6 +2,9 @@
 using Entities;
 using System.Linq;
 using BLInterfaces;
+using System;
+using System.Text;
+using CommonConstants;
 
 namespace BuisnessLogic
 {
@@ -28,8 +31,6 @@ namespace BuisnessLogic
                     var data = ConstructStartData(result);
 
                     inputSignals = data.outputSignals;
-
-                    startCondtions = data.conditions;
                 }
 
                 for (int i = 0; i < inputSignals.Count; i++)
@@ -81,6 +82,42 @@ namespace BuisnessLogic
             }
 
             return uniqueSignals;
+        }
+
+        public string CalculateInputSignals(string textToSplit)
+        {
+            StringBuilder result = new StringBuilder();
+
+            foreach (var item in textToSplit.Split(SplitTemplates.spaceToSplit, StringSplitOptions.RemoveEmptyEntries))
+            {
+                result.Append(item);
+            }
+
+            return result.ToString();
+        }
+        
+        public string CalculateOutputSignals(Dictionary<int, List<AutomatConfiguration>> dataToCalculate)
+        {
+            StringBuilder result = new StringBuilder();
+
+            foreach (var item in dataToCalculate.Values)
+            {
+                item.ForEach((configuration) => result.Append(configuration.OutputSignal));
+            }
+
+            return result.ToString();
+        }
+
+        public List<int> GetDistinctStartConditionsSet(string conditionsString)
+        {
+            SortedSet<int> result = new SortedSet<int>();
+
+            foreach (var item in conditionsString.Split(SplitTemplates.spaceToSplit, StringSplitOptions.RemoveEmptyEntries))
+            {
+                result.Add(int.Parse(item));
+            }
+
+            return result.ToList();
         }
     }
 }

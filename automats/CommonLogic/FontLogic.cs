@@ -14,10 +14,6 @@ namespace CommonLogic
 
         public const int columnWidth = 60;
 
-        public static readonly char[] spaceToSplit = new char[] { ' ' };
-
-        public static readonly char[] newLineToSplit = new char[] { '\n', '\r' };
-
         const int maxWidth = 20;
 
         const int maxHeight = 30;
