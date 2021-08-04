@@ -22,7 +22,7 @@ namespace Dependencies
         }
         #endregion
 
-        IDataProvider DAL => new DAL();
+        IDataProvider DAL => new DataIntegrityDAL();
 
         IAutomatChainModellingDAL ModellingDAL => new AutomatChainModellingDAL();
 

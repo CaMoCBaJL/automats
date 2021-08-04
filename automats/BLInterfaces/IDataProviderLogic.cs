@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Entities;
+using System.Drawing;
 
 namespace BLInterfaces
 {
@@ -7,9 +8,9 @@ namespace BLInterfaces
     {
         List<string> GetData(string path);
 
-        void SaveAutomatChainAppearance(Dictionary<int, string> elementsLocation);
+        void SaveAutomatChainAppearance(Dictionary<string, Point> nameAndLocationPair);
 
-        Dictionary<int, string> LoadAutomatChainAppearance();
+        Dictionary<string, Point> LoadAutomatChainAppearance();
 
         bool AddAutomatData(string automatTablesFileName, string inputSignalsString, string outputSignalsString, string automatName);
     }

@@ -3,6 +3,8 @@ using DalInterfaces;
 using System.Collections.Generic;
 using System.Drawing;
 using Entities;
+using System.Linq;
+using System;
 
 namespace BuisnessLogic
 {
@@ -18,13 +20,16 @@ namespace BuisnessLogic
         public List<string> GetData(string path)
                => new List<string>(_DAL.GetData(path));
 
-        public Dictionary<int, string> LoadAutomatChainAppearance()
+        public Dictionary<string, Point> LoadAutomatChainAppearance()
         {
-            Dictionary<int, string> result = new Dictionary<int, string>();
+            Dictionary<string, Point> result = new Dictionary<string, Point>();
 
-            foreach (var dataItem in _DAL.DeserializeAutomatChain())
+            foreach (var automatGroup in _DAL.LoadAutomatChainConfiguration())
             {
-                result.Add(int.Parse(dataItem.Split()[0]), dataItem.Split()[1]);
+                foreach (var element in automatGroup.GroupElements)
+                {
+                    result.Add(element.AutomatName, element.AutomatLocation);
+                }
             }
 
             return result;
@@ -32,14 +37,44 @@ namespace BuisnessLogic
 
         public void SaveAutomatChainAppearance(Dictionary<string, Point> nameAndLocationPair)
         {
-            List<ChainModellingGroupOfElements> dataToSave = new List<ChainModellingGroupOfElements>();
+            _DAL.SaveAutomatChainConfiguration(DivideAutomatByGroups(nameAndLocationPair));
+        }
 
-            foreach (var item in nameAndLocationPair)
+        List<ChainModellingGroupOfElements> DivideAutomatByGroups(Dictionary<string, Point> dataToDivision)
+        {
+            List<ChainModellingGroupOfElements> result = new List<ChainModellingGroupOfElements>();
+
+            while (dataToDivision.Count > 0)
             {
-                dataToSave.Add(new ChainModellingGroupOfElements(item.Key, item.Value))
+                List<ChainElemViewInfo> group = new List<ChainElemViewInfo>();
+
+                var elemToCompare = dataToDivision.ElementAt(0);
+
+                if (dataToDivision.Count == 1)
+                {
+                    group.Add(new ChainElemViewInfo(elemToCompare.Value, elemToCompare.Key));
+
+                    break;
+                }
+
+                foreach (var item in dataToDivision)
+                {
+                    if (item.Key == elemToCompare.Key)
+                        continue;
+
+                    if (Math.Abs(item.Value.X - elemToCompare.Value.X) < 20)
+                        group.Add(new ChainElemViewInfo(item.Value, item.Key));
+                }
+
+                if (group.Count == 0)
+                    group.Add(new ChainElemViewInfo(elemToCompare.Value, elemToCompare.Key));
+
+                group.ForEach((KeyValuePair) => dataToDivision.Remove(KeyValuePair.AutomatName));
+
+                result.Add(new ChainModellingGroupOfElements(result.Count + 1, group));
             }
 
-            _DAL.SerializeAutomatChain(dataToSerialization.ToString());
+            return result;
         }
     }
 }

@@ -3,7 +3,6 @@ using DalInterfaces;
 using System.Collections.Generic;
 using CommonConstants;
 using System.IO;
-using Entities;
 
 namespace BuisnessLogic
 {
@@ -64,7 +63,5 @@ namespace BuisnessLogic
 
             return OperationResultIndicators.errorMessage;
         }
-
-        ChainModellingGroupOfElements DivideData()
     }
 }

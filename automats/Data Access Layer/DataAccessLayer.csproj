@@ -46,7 +46,7 @@
   <ItemGroup>
     <Compile Include="AutomatChainModellingDAL.cs" />
     <Compile Include="AutomatParser.cs" />
-    <Compile Include="DAL.cs" />
+    <Compile Include="DataIntegrityDAL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

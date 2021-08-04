@@ -7,9 +7,9 @@ namespace DalInterfaces
     {
         IEnumerable<string> GetData(string pathToFile);
 
-        void SerializeAutomatChain(string data);
+        void SaveAutomatChainConfiguration(IEnumerable<ChainModellingGroupOfElements> chainConfiguration);
 
-        IEnumerable<string> DeserializeAutomatChain();
+        IEnumerable<ChainModellingGroupOfElements> LoadAutomatChainConfiguration();
 
         bool SaveAutomatWorkData(ChainElementSettings automatData);
     }

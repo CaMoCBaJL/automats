@@ -21,7 +21,7 @@ namespace DataAccessLayer
 
             string[,] outputTable = default;
 
-            List<string> autData = new DAL().GetData(FileName).ToList();
+            List<string> autData = new DataIntegrityDAL().GetData(FileName).ToList();
 
             for (int i = 0; i < autData.Count; i++)
             {
