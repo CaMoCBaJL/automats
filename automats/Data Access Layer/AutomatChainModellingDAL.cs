@@ -56,6 +56,8 @@ namespace DataAccessLayer
 
         public ChainElementSettings GetChainElement(string pathToFile)
         => JsonConvert.DeserializeObject<ChainElementSettings>(File.ReadAllText(pathToFile));
-        
+
+        public IEnumerable<ChainModellingGroupOfElements> GetElementGroups()
+        => JsonConvert.DeserializeObject<List<ChainModellingGroupOfElements>>(File.ReadAllText(PathConstants.chainModellingConfigurationFile));
     }
 }

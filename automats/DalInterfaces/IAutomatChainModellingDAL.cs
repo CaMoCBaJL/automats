@@ -18,5 +18,7 @@ namespace DalInterfaces
         bool IsChainModellingModeActive();
 
         ChainElementSettings GetChainElement(string pathToFile);
+
+        IEnumerable<ChainModellingGroupOfElements> GetElementGroups();
     }
 }

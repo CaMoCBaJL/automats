@@ -3,6 +3,7 @@ using DalInterfaces;
 using System.Collections.Generic;
 using CommonConstants;
 using System.IO;
+using Entities;
 
 namespace BuisnessLogic
 {
@@ -24,7 +25,10 @@ namespace BuisnessLogic
             if (!DidGroupElemsWork(elementsNames).ValidationPassed())
                 return DidGroupElemsWork(elementsNames);
 
-            if (!DidAllPreviousGroupsWork(groupNum))
+            if (!DidAllPreviousGroupsWork(groupNum).ValidationPassed())
+                return DidAllPreviousGroupsWork(groupNum);
+
+            return _DAL.CalculateGroupOutputSignal(elementsNames);
         }
 
         public bool DidAutomatWork(string automatName)
@@ -32,21 +36,35 @@ namespace BuisnessLogic
 
         public string DidGroupElemsWork(IEnumerable<string> groupElems)
         {
-            foreach (string automatName in groupElems)
-                if (!DidAutomatWork(automatName))
-                    return automatName + OperationResultIndicators.automatNotWorked;
+            foreach (var elem in groupElems)
+                if (!DidAutomatWork(elem))
+                    return elem + OperationResultIndicators.automatNotWorked;
 
             return OperationResultIndicators.allOk;
         }
 
-        public bool DidAllPreviousGroupsWork(int currentGroupNum)
+        public string DidAllPreviousGroupsWork(int currentGroupNum)
         {
             if (currentGroupNum == 1)
-                return true;
+                return OperationResultIndicators.allOk;
             else
             {
+                foreach (var group in _DAL.GetElementGroups())
+                {
+                    if (group.GroupNumber <= currentGroupNum)
+                    {
+                        if (!DidGroupElemsWork(group.GetElementNames()).ValidationPassed())
+                            return DidGroupElemsWork(group.GetElementNames());
+                    }
 
+                    else
+                        return OperationResultIndicators.allOk;
+                }
             }
+
+            return OperationResultIndicators.errorMessage;
         }
+
+        ChainModellingGroupOfElements DivideData()
     }
 }

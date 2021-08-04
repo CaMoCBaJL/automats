@@ -1,7 +1,7 @@
 ﻿using BLInterfaces;
 using DalInterfaces;
 using System.Collections.Generic;
-using System.Text;
+using System.Drawing;
 using Entities;
 
 namespace BuisnessLogic
@@ -30,13 +30,13 @@ namespace BuisnessLogic
             return result;
         }
 
-        public void SaveAutomatChainAppearance(Dictionary<int, string> elementsLocations)
+        public void SaveAutomatChainAppearance(Dictionary<string, Point> nameAndLocationPair)
         {
-            StringBuilder dataToSerialization = new StringBuilder();
+            List<ChainModellingGroupOfElements> dataToSave = new List<ChainModellingGroupOfElements>();
 
-            foreach (var item in elementsLocations)
+            foreach (var item in nameAndLocationPair)
             {
-                dataToSerialization.AppendLine(item.Key + " " + item.Value);
+                dataToSave.Add(new ChainModellingGroupOfElements(item.Key, item.Value))
             }
 
             _DAL.SerializeAutomatChain(dataToSerialization.ToString());

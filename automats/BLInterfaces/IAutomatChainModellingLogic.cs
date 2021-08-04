@@ -14,6 +14,6 @@ namespace BLInterfaces
 
         string DidGroupElemsWork(IEnumerable<string> groupElems);
 
-        bool DidAllPreviousGroupsWork(int currentGroupNum);
+        string DidAllPreviousGroupsWork(int currentGroupNum);
     }
 }
