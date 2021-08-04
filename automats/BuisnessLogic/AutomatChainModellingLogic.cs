@@ -1,6 +1,8 @@
 ﻿using BLInterfaces;
 using DalInterfaces;
 using System.Collections.Generic;
+using CommonConstants;
+using System.IO;
 
 namespace BuisnessLogic
 {
@@ -19,17 +21,32 @@ namespace BuisnessLogic
 
         public string CalculateGroupOutputSignals(int groupNum, IEnumerable<string> elementsNames)
         {
-            throw new System.NotImplementedException();
+            if (!DidGroupElemsWork(elementsNames).ValidationPassed())
+                return DidGroupElemsWork(elementsNames);
+
+            if (!DidAllPreviousGroupsWork(groupNum))
         }
 
-        public bool DidAutomatWorked(string automatName)
+        public bool DidAutomatWork(string automatName)
+        => _DAL.DidAutomatWork(PathConstants.automatChainModellingFolder + Path.DirectorySeparatorChar + automatName + ".json");
+
+        public string DidGroupElemsWork(IEnumerable<string> groupElems)
         {
-            throw new System.NotImplementedException();
+            foreach (string automatName in groupElems)
+                if (!DidAutomatWork(automatName))
+                    return automatName + OperationResultIndicators.automatNotWorked;
+
+            return OperationResultIndicators.allOk;
         }
 
-        public string DidPreviousGroupElemsWorked(IEnumerable<string> elementsNames)
+        public bool DidAllPreviousGroupsWork(int currentGroupNum)
         {
-            throw new System.NotImplementedException();
+            if (currentGroupNum == 1)
+                return true;
+            else
+            {
+
+            }
         }
     }
 }

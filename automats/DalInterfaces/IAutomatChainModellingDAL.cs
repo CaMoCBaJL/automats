@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Entities;
 
 namespace DalInterfaces
 {
@@ -8,12 +9,14 @@ namespace DalInterfaces
 
         void EndAutomatChainModelling();
 
-        bool DidAutomatWorked(string automatName);
+        bool DidAutomatWork(string fileName);
 
-        bool DidPreviousGroupElementsWorked(IEnumerable<string> elemsNameList);
+        bool DidGroupElementsWork(IEnumerable<string> groupElems);
 
-        string CalculateGroupOutputSignal(IEnumerable<string> elemsNameList);
+        string CalculateGroupOutputSignal(IEnumerable<string> groupElems);
 
         bool IsChainModellingModeActive();
+
+        ChainElementSettings GetChainElement(string pathToFile);
     }
 }

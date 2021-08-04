@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BLInterfaces", "BLInterface
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuisnessLogic", "BuisnessLogic\BuisnessLogic.csproj", "{9B902A59-F2DA-4A7C-AEF2-74C62D32DC94}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonConstants", "CommonConstants\CommonConstants.csproj", "{EE454F6A-F369-4D05-B105-614F89745D45}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -65,6 +67,10 @@ Global
 		{9B902A59-F2DA-4A7C-AEF2-74C62D32DC94}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9B902A59-F2DA-4A7C-AEF2-74C62D32DC94}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9B902A59-F2DA-4A7C-AEF2-74C62D32DC94}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE454F6A-F369-4D05-B105-614F89745D45}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE454F6A-F369-4D05-B105-614F89745D45}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE454F6A-F369-4D05-B105-614F89745D45}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE454F6A-F369-4D05-B105-614F89745D45}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -78,6 +84,7 @@ Global
 		{174735B1-D004-48A3-89A6-B2DAB19B2255} = {B5C4E6F7-DCCB-400E-B6FC-A23C10B53A67}
 		{6BF7340D-4165-4834-AD3E-B8CA741617B6} = {6BB1BD82-3ABC-460D-BF09-F167CCD6A675}
 		{9B902A59-F2DA-4A7C-AEF2-74C62D32DC94} = {6BB1BD82-3ABC-460D-BF09-F167CCD6A675}
+		{EE454F6A-F369-4D05-B105-614F89745D45} = {20043E8C-3D32-4452-A452-E0889A0E840C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8EC1AC3F-A84A-4F7B-BEFC-FE459ED90003}

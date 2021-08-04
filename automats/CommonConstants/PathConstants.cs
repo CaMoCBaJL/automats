@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace DataAccessLayer
+namespace CommonConstants
 {
     public static class PathConstants
     {
