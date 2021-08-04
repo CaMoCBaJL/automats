@@ -21,6 +21,10 @@ namespace DataAccessLayer
                 return new ChainModellingGroupOfElements[] { };
         }
 
+        public (int[,] DeltaTable, string[,] LambdaTable) ParseAutomatData(string pathToFile)
+            => new AutomatParser(pathToFile).ParseData();
+        
+
         public void SaveAutomatChainConfiguration(IEnumerable<ChainModellingGroupOfElements> chainConfiguration)
         {
             File.WriteAllText(JsonConvert.SerializeObject(chainConfiguration), PathConstants.chainModellingConfigurationFile);

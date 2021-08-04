@@ -1,12 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Entities;
 
@@ -17,15 +9,12 @@ namespace PresentationLayer
         public Form2()
         {
             InitializeComponent();
-            StreamWriter contentRefresh = new StreamWriter("ABT.txt", false);
-            contentRefresh.Write(string.Empty);
-            contentRefresh.Close();
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
             this.Hide();
-            new Form1(true, string.Empty, ExecutionType.Modeling).Show();
+            new ModellingForm(true, string.Empty, ExecutionType.Modeling).Show();
 
         }
 
@@ -38,7 +27,7 @@ namespace PresentationLayer
         private void button3_Click(object sender, EventArgs e)
         {
             this.Hide();
-            new Form1(true, string.Empty, ExecutionType.Experiment).Show();
+            new ExperimentForm(true, string.Empty, ExecutionType.Experiment).Show();
 
         }
 

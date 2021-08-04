@@ -13,5 +13,7 @@ namespace BLInterfaces
         Dictionary<string, Point> LoadAutomatChainAppearance();
 
         bool AddAutomatData(string automatTablesFileName, string inputSignalsString, string outputSignalsString, string automatName);
+
+        Automat ParseAutomatDataTables(string pathToFile);
     }
 }

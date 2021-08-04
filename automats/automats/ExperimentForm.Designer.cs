@@ -1,6 +1,6 @@
 ﻿namespace PresentationLayer
 {
-    partial class Form1
+    partial class ExperimentForm
     {
         /// <summary>
         /// Обязательная переменная конструктора.

@@ -10,86 +10,75 @@ using Dependencies;
 
 namespace PresentationLayer
 {
-    public partial class Form1 : Form
+    public partial class ModellingForm : InputAutomat
     {
-        Automat currentAutomat;
-        string fileName;
-        List<string> inputSignalSet;
-        List<int> inputCondSet;
-        List<AutOptions> autG = new List<AutOptions>();
-        bool isAutFirst;
-        int automatNum = 0;
-        ExecutionType execType;
+        int GroupNum { get; set; }
 
-
-        public Form1(bool autLevel, string file, ExecutionType executionType)
+        public ModellingForm(int groupNum)
         {
             InitializeComponent();
-            fileName = file;
-            isAutFirst = autLevel;
-            execType = executionType;
 
-            if (executionType == ExecutionType.Experiment)
-            {
-                Text = "Проведение экспериментов над автоматом";
+            GroupNum = groupNum;
 
-                richTextBox1.Hide();
-                label1.Hide();
-                label4.Hide();
-                textBox1.Hide();
-            }
-            else
-            {
+            //if (executionType == ExecutionType.Experiment)
+            //{
+            //    Text = "Проведение экспериментов над автоматом";
+
+            //    richTextBox1.Hide();
+            //    label1.Hide();
+            //    label4.Hide();
+            //    textBox1.Hide();
+            //}
+            //else
+            //{
                 Text = "Моделирование работы автомата";
 
                 labelExperimentType.Hide();
                 radioButtonDiagnExp.Hide();
                 radioButtonSetExp.Hide();
-            }
-
-            DataShow();
+            //}
         }
 
-        public Form1(bool autLevel, string file, List<AutOptions> auts, int autNum, StringBuilder outputs)
-        {
-            InitializeComponent();
+        //public ModellingForm(bool autLevel, string file, List<AutOptions> auts, int autNum, StringBuilder outputs)
+        //{
+        //    InitializeComponent();
 
-            fileName = file;
-            isAutFirst = autLevel;
-            autG = auts;
-            automatNum = autNum;
+        //    fileName = file;
+        //    isAutFirst = autLevel;
+        //    autG = auts;
+        //    automatNum = autNum;
 
-            button3.Hide();
+        //    button3.Hide();
 
-            DataShow();
-            Button ret = new Button();
-            ret.Location = new Point(richTextBox3.Location.X + 5,
-                richTextBox3.Location.Y + richTextBox3.Height + 20);
-            ret.Size = new Size(richTextBox3.Location.X, 50);
-            ret.Click += retClick;
-            ret.Text = "Назад";
-            Controls.Add(ret);
+        //    DataShow();
+        //    Button ret = new Button();
+        //    ret.Location = new Point(richTextBox3.Location.X + 5,
+        //        richTextBox3.Location.Y + richTextBox3.Height + 20);
+        //    ret.Size = new Size(richTextBox3.Location.X, 50);
+        //    ret.Click += retClick;
+        //    ret.Text = "Назад";
+        //    Controls.Add(ret);
 
-            if (autLevel)
-            {
-                AutOptions a = autG[automatNum];
-                textBox2.Text = a.StartCondition.ToString();
-                richTextBox1.Text = a.OutputSignals.ToString();
-            }
+        //    if (autLevel)
+        //    {
+        //        AutOptions a = autG[automatNum];
+        //        textBox2.Text = a.StartCondition.ToString();
+        //        richTextBox1.Text = a.OutputSignals.ToString();
+        //    }
 
-            if (!autLevel)
-            {
-                textBox2.ReadOnly = true;
-                richTextBox1.Text = outputs.ToString();
-                richTextBox1.ReadOnly = true;
-                button1.Hide();
-                if (!string.IsNullOrEmpty(fileName))
-                    button1_Click(currentAutomat.DeltaTable.GetLength(1), EventArgs.Empty);
-            }
-            if (!string.IsNullOrEmpty(richTextBox1.Text) && !string.IsNullOrEmpty(textBox2.Text) &&
-                !string.IsNullOrEmpty(fileName))
-                button1_Click(fileName, EventArgs.Empty);
-        }
+        //    if (!autLevel)
+        //    {
+        //        textBox2.ReadOnly = true;
+        //        richTextBox1.Text = outputs.ToString();
+        //        richTextBox1.ReadOnly = true;
+        //        button1.Hide();
+        //        if (!string.IsNullOrEmpty(fileName))
+        //            button1_Click(currentAutomat.DeltaTable.GetLength(1), EventArgs.Empty);
+        //    }
+        //    if (!string.IsNullOrEmpty(richTextBox1.Text) && !string.IsNullOrEmpty(textBox2.Text) &&
+        //        !string.IsNullOrEmpty(fileName))
+        //        button1_Click(fileName, EventArgs.Empty);
+        //}
 
         public void retClick(object sender, EventArgs e)
         {
@@ -97,25 +86,13 @@ namespace PresentationLayer
                 && !string.IsNullOrEmpty(textBox2.Text))//По окончании работы автомата, добавляем выходные сигналы в файл,
                                                         //если авт-т не в 1 группе.
             {
-                AutOptions a = autG[automatNum];
-                if (isAutFirst)//Если автомат в 1ой группе, то сохраняем X & S0
-                {
-                    a.StartCondition = new StringBuilder(textBox2.Text);
-                    a.InputSignals = new StringBuilder(richTextBox1.Text);
-                }
-
-                autG[automatNum] = a;
+                //DependencyResolver.Instance.BL.AddAutomatData(InputFileName, richTextBox1, 
+                //    DependencyResolver.Instance.AutomatModellingBL.ModelTheAutomatWork());
             }
 
-            new Form3(autG).Show();
+            new Form3().Show();
 
             this.Hide();
-        }
-
-        public void DataShow()
-        {
-            if (!string.IsNullOrEmpty(fileName))
-                UpdateUserInterface(currentAutomat);
         }
 
         void SetExperimentInterface()
@@ -134,18 +111,15 @@ namespace PresentationLayer
 
         }
 
-        private void Form1_Resize(object sender, EventArgs e)
-        {
-            DataShow();
-
-            Refresh();
-        }
-
         private void button1_Click(object sender, EventArgs e)
         {
             richTextBox1.Multiline = true;
 
-            if (string.IsNullOrEmpty(fileName))
+            // todo: Remove enum ExecutionType.
+
+            ExecutionType execType = ExecutionType.Modeling;
+
+            if (string.IsNullOrEmpty(InputFileName))
                 MessageBox.Show("Добавьте автомат.");
 
             else
@@ -154,9 +128,9 @@ namespace PresentationLayer
                 {
                     if (!string.IsNullOrEmpty(richTextBox1.Text) && !string.IsNullOrEmpty(textBox2.Text))
                     {
-                        inputCondSet = GetDistinctStartConditionsSet();
+                        List<int> inputCondSet = GetDistinctStartConditionsSet();
 
-                        inputSignalSet = new List<string>();
+                        List<string> inputSignalSet = new List<string>();
 
                         try
                         {
@@ -167,9 +141,9 @@ namespace PresentationLayer
 
                             var data = DependencyResolver.Instance.AutomatModellingBL.ModelTheAutomatWork(GetDistinctStartConditionsSet(),
                                 richTextBox1.Text.Split(FontLogic.spaceToSplit, StringSplitOptions.RemoveEmptyEntries).ToList(),
-                                currentAutomat, iterCounter);
+                                CurrentAutomat, iterCounter);
 
-                            new Form4(data, execType).Show();
+                            new Form4(data, ExecutionType.Modeling).Show();
 
                             Refresh();
                         }
@@ -183,7 +157,7 @@ namespace PresentationLayer
                 }
                 else
                 {
-                    if (!string.IsNullOrEmpty(textBox2.Text.Trim()) && !string.IsNullOrEmpty(fileName))
+                    if (!string.IsNullOrEmpty(textBox2.Text.Trim()) && !string.IsNullOrEmpty(InputFileName))
                     {
                         if (radioButtonSetExp.Checked ^ radioButtonDiagnExp.Checked)
                         {
@@ -200,9 +174,9 @@ namespace PresentationLayer
                                 initialConditionsSet.Add(int.Parse(item));
 
                             var data = DependencyResolver.Instance.AutomatExperimentLogic.StartTheExperiment(
-                               initialConditionsSet, currentAutomat.DeltaTable, currentAutomat.LambdaTable, experimentType);
+                               initialConditionsSet, CurrentAutomat.DeltaTable, CurrentAutomat.LambdaTable, experimentType);
 
-                            new Form4(data, execType).Show();
+                            new Form4(data, ExecutionType.Experiment).Show();
                         }
                         else
                             MessageBox.Show("Выберите тип эксперимента!");

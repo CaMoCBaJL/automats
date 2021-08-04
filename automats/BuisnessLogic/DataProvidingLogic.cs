@@ -35,6 +35,19 @@ namespace BuisnessLogic
             return result;
         }
 
+        public Automat ParseAutomatDataTables(string pathToFile)
+        {
+            var automat = new Automat();
+
+            var data = _DAL.ParseAutomatData(pathToFile);
+
+            automat.SetDeltaTable(data.DeltaTable);
+
+            automat.SetLambdaTable(data.LambdaTable);
+
+            return automat;
+        }
+
         public void SaveAutomatChainAppearance(Dictionary<string, Point> nameAndLocationPair)
         {
             _DAL.SaveAutomatChainConfiguration(DivideAutomatByGroups(nameAndLocationPair));

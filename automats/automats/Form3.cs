@@ -35,7 +35,7 @@ namespace PresentationLayer
             AddAutomats(auts);
         }
 
-        public Form3(Form f) => InitializeComponent();
+        public Form3() => InitializeComponent();
 
         void AddAutomats(List<AutOptions> PresentationLayer)
         {
@@ -259,7 +259,7 @@ namespace PresentationLayer
 
                 this.Hide();
 
-                new Form1(autLvl, PresentationLayer.Find(s => s.Label == l).DataFile, PresentationLayer,
+                new ModellingForm(autLvl, PresentationLayer.Find(s => s.Label == l).DataFile, PresentationLayer,
                     (l.Text.Last() - '0') - 1, stringa).Show();
             }
             else

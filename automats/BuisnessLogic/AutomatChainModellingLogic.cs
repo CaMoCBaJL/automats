@@ -63,5 +63,8 @@ namespace BuisnessLogic
 
             return OperationResultIndicators.errorMessage;
         }
+
+        public bool IsChainModellingModeActive()
+        => _DAL.IsChainModellingModeActive();
     }
 }

@@ -8,19 +8,6 @@ namespace CommonLogic
 {
     public class Logic
     {
-        public Automat GetAutomatTables(string pathToFile)
-        {
-            var automat = new Automat();
-
-            var data = new AutomatParser(pathToFile).ParseData();
-
-            automat.SetDeltaTable(data.DeltaTable);
-
-            automat.SetLambdaTable(data.LambdaTable);
-
-            return automat;
-        }
-
         public Dictionary<int, List<string>> ParseConfigurations(Dictionary<int, List<AutomatConfiguration>> processedData)
         {
             Dictionary<int, List<string>> result = new Dictionary<int, List<string>>();
@@ -100,37 +87,6 @@ namespace CommonLogic
                 }
 
                 counter += experimentResult[i].Count;
-            }
-
-            return result;
-        }
-
-        public List<string> GenerateInputStrings(int alphabetDegree, SortedSet<int> alphabet)
-        {
-            List<string> result = new List<string>();
-
-            alphabet.ToList().ForEach((signal) => result.Add(signal.ToString()));
-
-            int counter = 1;
-
-
-            while (counter < alphabetDegree)
-            {
-                int leftBorder = (int)Math.Pow(alphabet.Count, counter - 1);
-
-                int rightBorder = (int)Math.Pow(alphabet.Count, counter);
-
-                List<string> layer = new List<string>();
-
-                for (int i = leftBorder; i < rightBorder; i++)
-                {
-                    foreach (var symbol in alphabet)
-                    {
-                        layer.Add(result[i] + symbol.ToString());
-                    }
-                }
-
-                counter++;
             }
 
             return result;

@@ -4,6 +4,8 @@ namespace BLInterfaces
 {
     public interface IAutomatChainModellingLogic
     {
+        bool IsChainModellingModeActive();
+
         void StartAutomatChainModelling();
 
         void EndAutomatChainModelling();
@@ -15,5 +17,7 @@ namespace BLInterfaces
         string DidGroupElemsWork(IEnumerable<string> groupElems);
 
         string DidAllPreviousGroupsWork(int currentGroupNum);
+
+
     }
 }

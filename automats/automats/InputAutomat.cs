@@ -4,13 +4,15 @@ using System;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Dependencies;
 
 namespace PresentationLayer
 {
     public partial class InputAutomat : Form
     {
-        Automat CurrentAutomat { get; set; }
+        protected Automat CurrentAutomat { get; set; }
 
+        protected string InputFileName { get; set; }
 
         public InputAutomat()
         {
@@ -25,16 +27,9 @@ namespace PresentationLayer
 
             if (k.ShowDialog() == DialogResult.OK)
             {
-                fileName = k.FileName;
+                InputFileName = k.FileName;
 
-                CurrentAutomat = new Logic().GetAutomatTables(fileName);
-
-                if (autG.Count > 0)
-                {
-                    AutOptions a = autG[automatNum];
-                    a.DataFile = fileName;
-                    autG[automatNum] = a;
-                }
+                CurrentAutomat = DependencyResolver.Instance.BL.ParseAutomatDataTables(InputFileName);
 
                 UpdateUserInterface(CurrentAutomat);
             }
