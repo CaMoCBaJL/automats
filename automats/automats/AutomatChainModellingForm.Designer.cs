@@ -30,7 +30,7 @@
         {
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.button2 = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
+            this.addAutomatButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -58,31 +58,31 @@
             this.button2.UseVisualStyleBackColor = false;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
-            // button1
+            // addAutomatButton
             // 
-            this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.button1.BackColor = System.Drawing.Color.LimeGreen;
-            this.button1.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.button1.Font = new System.Drawing.Font("Verdana", 14F);
-            this.button1.Location = new System.Drawing.Point(543, 264);
-            this.button1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(156, 82);
-            this.button1.TabIndex = 3;
-            this.button1.Text = "Добавить автомат";
-            this.button1.UseVisualStyleBackColor = false;
-            this.button1.Click += new System.EventHandler(this.AddAutomat);
+            this.addAutomatButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.addAutomatButton.BackColor = System.Drawing.Color.LimeGreen;
+            this.addAutomatButton.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.addAutomatButton.Font = new System.Drawing.Font("Verdana", 14F);
+            this.addAutomatButton.Location = new System.Drawing.Point(543, 264);
+            this.addAutomatButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.addAutomatButton.Name = "addAutomatButton";
+            this.addAutomatButton.Size = new System.Drawing.Size(156, 82);
+            this.addAutomatButton.TabIndex = 3;
+            this.addAutomatButton.Text = "Добавить автомат";
+            this.addAutomatButton.UseVisualStyleBackColor = false;
+            this.addAutomatButton.Click += new System.EventHandler(this.addAutomatButtonClick);
             // 
-            // Form3
+            // AutomatChainModellingForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(711, 360);
             this.Controls.Add(this.button2);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.addAutomatButton);
             this.Controls.Add(this.pictureBox1);
             this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.Name = "Form3";
+            this.Name = "AutomatChainModellingForm";
             this.Text = "Цепочка автоматов";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form3_FormClosed);
             this.Load += new System.EventHandler(this.Form3_Load);
@@ -95,6 +95,6 @@
         #endregion
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button addAutomatButton;
     }
 }

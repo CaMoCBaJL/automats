@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
+using Dependencies;
 using System.Text;
 using System.Windows.Forms;
 using Entities;
@@ -35,6 +35,8 @@ namespace PresentationLayer
             AddAutomats(auts);
         }
 
+        
+
         public AutomatChainModellingForm() => InitializeComponent();
 
         void AddAutomats(List<AutOptions> PresentationLayer)
@@ -61,9 +63,9 @@ namespace PresentationLayer
 
         void DrawConsistentConnection(Graphics g, List<Label> currentGroup, List<Label> previousGroup, int offsetX)
         {
-            var prevGroupCenter = DrawingLogic.GetCentralPoint(previousGroup, labelWidth, offsetX);
+            var prevGroupCenter = new DrawingLogic().GetCentralPoint(previousGroup, labelWidth, offsetX);
 
-            var curGroupCenter = DrawingLogic.GetCentralPoint(currentGroup, labelWidth, offsetX);
+            var curGroupCenter = new DrawingLogic().GetCentralPoint(currentGroup, labelWidth, offsetX);
 
             if (currentGroup.Count == 1 && previousGroup.Count == 1)
                 g.DrawLine(Pens.Black,
@@ -197,7 +199,6 @@ namespace PresentationLayer
                     break;
                 }
 
-            bool autLvl;
             int groupNum = 0;
             int res = indx;
 
@@ -259,8 +260,7 @@ namespace PresentationLayer
 
                 this.Hide();
 
-                new ModellingForm(autLvl, PresentationLayer.Find(s => s.Label == l).DataFile, PresentationLayer,
-                    (l.Text.Last() - '0') - 1, stringa).Show();
+                new ModellingForm().Show();
             }
             else
                 MessageBox.Show("Предыдущая группа не работала!");
@@ -276,24 +276,7 @@ namespace PresentationLayer
             }
 
             Refresh();
-        }
-
-        private void AddAutomat(object sender, EventArgs e)
-        {
-            Label l1 = new Label();
-            l1.TextAlign = ContentAlignment.MiddleCenter;
-            l1.Font = new Font("Verdana; 42pt", 26);
-            l1.Text = "A" + (AutOptions.AutNum+1);
-            l1.Location = new Point(100, 100);
-            l1.Size = new Size(labelWidth, labelHeight);
-            l1.MouseDown += LabelMouseDown;
-            l1.MouseMove += LabelMouseMove;
-            l1.MouseUp += LabelMouseUp;
-            l1.MouseDoubleClick += LabelMouseDoubleClick;
-            PresentationLayer.Add(new AutOptions(l1, string.Empty, new StringBuilder(), new StringBuilder(), new StringBuilder()));
-            Controls.Add(l1);
-            l1.BringToFront();
-        }
+        }     
 
         private void button2_Click(object sender, EventArgs e)
         {
@@ -309,6 +292,36 @@ namespace PresentationLayer
             pictureBox1.Size = Size;
 
             globalGraphics = pictureBox1.CreateGraphics();
+
+            var chainData = DependencyResolver.Instance.BL.LoadAutomatChainAppearance();
+
+            if (chainData.Count > 0)
+                FillTheScreen(chainData);
+        }
+
+        void FillTheScreen(Dictionary<string, Point> chainElems)
+        {
+            foreach (var item in chainElems)
+            {
+                AddAutomat(item.Key, item.Value);
+            }
+        }
+
+        void AddAutomat(string automatName, Point labelLocation)
+        {
+            Label l1 = new Label();
+            l1.TextAlign = ContentAlignment.MiddleCenter;
+            l1.Font = new Font("Verdana; 42pt", 26);
+            l1.Text = automatName;
+            l1.Location = labelLocation;
+            l1.Size = new Size(labelWidth, labelHeight);
+            l1.MouseDown += LabelMouseDown;
+            l1.MouseMove += LabelMouseMove;
+            l1.MouseUp += LabelMouseUp;
+            l1.MouseDoubleClick += LabelMouseDoubleClick;
+            PresentationLayer.Add(new AutOptions(l1, string.Empty, new StringBuilder(), new StringBuilder(), new StringBuilder()));
+            Controls.Add(l1);
+            l1.BringToFront();
         }
 
         private void Form3_Resize(object sender, EventArgs e) => pictureBox1.Size = Size;
@@ -319,5 +332,9 @@ namespace PresentationLayer
 
             LabelsAreParallel();
         }
+
+        private void addAutomatButtonClick(object sender, EventArgs e)
+        => AddAutomat("A" + DependencyResolver.Instance.BL.LoadAutomatChainAppearance().Count, new Point(100, 100));
+
     }
 }
