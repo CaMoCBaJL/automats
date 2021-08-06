@@ -95,14 +95,18 @@ namespace BuisnessLogic
 
             return result.ToString();
         }
-        
+
         public string CalculateOutputSignals(Dictionary<int, List<AutomatConfiguration>> dataToCalculate)
         {
             StringBuilder result = new StringBuilder();
 
             foreach (var item in dataToCalculate.Values)
             {
-                item.ForEach((configuration) => result.Append(configuration.OutputSignal));
+                item.ForEach((configuration) =>
+                {
+                    if (configuration.OutputSignal != "-")
+                        result.Append(configuration.OutputSignal + " ");
+                });
             }
 
             return result.ToString();
@@ -118,6 +122,22 @@ namespace BuisnessLogic
             }
 
             return result.ToList();
+        }
+
+        public string CalculateStartConditions(Dictionary<int, List<AutomatConfiguration>> dataToCalculate)
+        {
+            StringBuilder result = new StringBuilder();
+
+            foreach (var item in dataToCalculate.Values)
+            {
+                item.ForEach((configuration) =>
+                {
+                    if (configuration.OutputSignal == "-")
+                        result.Append(configuration.Condition + " ");
+                });
+            }
+
+            return result.ToString();
         }
     }
 }

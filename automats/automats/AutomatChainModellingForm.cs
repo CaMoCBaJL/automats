@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Drawing;
 using Dependencies;
-using System.Text;
 using System.Windows.Forms;
-using Entities;
 using CommonLogic;
 using DataValidation;
+using System.Text;
+using CommonConstants;
+using System.Linq;
 
 namespace PresentationLayer
 {
@@ -97,6 +98,8 @@ namespace PresentationLayer
 
                 new ModellingForm(automat.Text).Show();
             }
+            else
+                MessageBox.Show(StringIndicators.previousGroupNotWorked, MessageBoxTitles.warningTitle, MessageBoxButtons.OK ,MessageBoxIcon.Warning);
 
         }
 
@@ -160,10 +163,33 @@ namespace PresentationLayer
             l1.MouseMove += LabelMouseMove;
             l1.MouseUp += LabelMouseUp;
             l1.MouseDoubleClick += LabelMouseDoubleClick;
+
+            AddToolTip(automatName, l1);
             Controls.Add(l1);
             l1.BringToFront();
 
-            DependencyResolver.Instance.ChainModellingBL.SaveAutomatChainAppearance(GetLabelData());
+            if (!DependencyResolver.Instance.ChainModellingBL.LoadAutomatChainAppearance().Keys.Contains(automatName))
+                DependencyResolver.Instance.ChainModellingBL.SaveAutomatChainAppearance(GetLabelData());
+        }
+
+        void AddToolTip(string automatName, Label automatLabel)
+        {
+            StringBuilder tooltipText = new StringBuilder();
+
+            if (DependencyResolver.Instance.ChainModellingBL.DidAutomatWork(automatName))
+                tooltipText.Append(StringIndicators.automatWorked + Environment.NewLine);
+            else
+            {
+                tooltipText.Append(automatName + StringIndicators.automatNotWorked + Environment.NewLine);
+
+                if (DependencyResolver.Instance.ChainModellingBL.DidAllPreviousGroupsWork(
+                    DependencyResolver.Instance.ChainModellingBL.GetAutomatGroup(automatName)).ValidationPassed())
+                    tooltipText.Append(StringIndicators.previousGroupWorked);
+                else
+                    tooltipText.Append(StringIndicators.previousGroupNotWorked);
+            }
+
+            new ToolTip().SetToolTip(automatLabel, tooltipText.ToString());
         }
 
         private void Form3_Resize(object sender, EventArgs e) => pictureBox1.Size = Size;

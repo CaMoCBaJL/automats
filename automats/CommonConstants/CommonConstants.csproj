@@ -41,7 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="OperationResultIndicators.cs" />
+    <Compile Include="MessageBoxTitles.cs" />
+    <Compile Include="StringIndicators.cs" />
     <Compile Include="PathConstants.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SplitTemplates.cs" />

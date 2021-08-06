@@ -65,8 +65,9 @@ namespace PresentationLayer
 
                         if (!DependencyResolver.Instance.BL.AddAutomatData(InputFileName,
                             DependencyResolver.Instance.AutomatModellingBL.CalculateInputSignals(inputSignalsTextBox.Text),
-                            DependencyResolver.Instance.AutomatModellingBL.CalculateOutputSignals(data), AutomatName))
-                            MessageBox.Show(OperationResultIndicators.savingError);
+                            DependencyResolver.Instance.AutomatModellingBL.CalculateOutputSignals(data), AutomatName,
+                            DependencyResolver.Instance.AutomatModellingBL.CalculateStartConditions(data)))
+                            MessageBox.Show(StringIndicators.savingError);
 
                         new DataVisualization(data, ExecutionType.Modeling).Show();
                     }
@@ -80,13 +81,6 @@ namespace PresentationLayer
             }
         }
 
-        private void button3_Click(object sender, EventArgs e)
-        {
-            this.Hide();
-
-            new Menu().Show();
-        }
-
         private void Form1_FormClosed(object sender, FormClosedEventArgs e) => Environment.Exit(0);
 
         private void textBox1_TextChanged(object sender, EventArgs e)
@@ -96,6 +90,28 @@ namespace PresentationLayer
                 textBox1.Text = string.Empty;
 
                 MessageBox.Show("Неверно введно число итераций");
+            }
+        }
+
+        private void ModellingForm_Load(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(AutomatName))
+            {
+                if (DependencyResolver.Instance.ChainModellingBL.DidAutomatWork(AutomatName))
+                {
+                    var data = DependencyResolver.Instance.BL.LoadAutomatSettings(AutomatName);
+
+                    inputSignalsTextBox.Text = data.InputSignalString;
+
+                    startConditionsTextBox.Text = data.StartConditionSet;
+
+                    CurrentAutomat = DependencyResolver.Instance.BL.ParseAutomatDataTables(data.AutomatDataFile);
+
+                    UpdateUserInterface(CurrentAutomat);
+                }
+
+                if (DependencyResolver.Instance.ChainModellingBL.GetAutomatGroup(AutomatName) > 1)
+                    inputSignalsTextBox.Text = DependencyResolver.Instance.ChainModellingBL.CalculateAutomatInputSignals(AutomatName);
             }
         }
     }

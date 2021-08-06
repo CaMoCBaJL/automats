@@ -24,17 +24,6 @@ namespace BuisnessLogic
         public void EndAutomatChainModelling()
         => _DAL.EndAutomatChainModelling();
 
-        public string CalculateGroupOutputSignals(int groupNum, IEnumerable<string> elementsNames)
-        {
-            if (!DidGroupElemsWork(elementsNames).ValidationPassed())
-                return DidGroupElemsWork(elementsNames);
-
-            if (!DidAllPreviousGroupsWork(groupNum).ValidationPassed())
-                return DidAllPreviousGroupsWork(groupNum);
-
-            return _DAL.CalculateGroupOutputSignal(elementsNames);
-        }
-
         public bool DidAutomatWork(string automatName)
         => _DAL.DidAutomatWork(PathConstants.automatChainModellingFolder + Path.DirectorySeparatorChar + automatName + ".json");
 
@@ -42,31 +31,31 @@ namespace BuisnessLogic
         {
             foreach (var elem in groupElems)
                 if (!DidAutomatWork(elem))
-                    return elem + OperationResultIndicators.automatNotWorked;
+                    return elem + StringIndicators.automatNotWorked;
 
-            return OperationResultIndicators.allOk;
+            return StringIndicators.allOk;
         }
 
         public string DidAllPreviousGroupsWork(int currentGroupNum)
         {
             if (currentGroupNum == 1)
-                return OperationResultIndicators.allOk;
+                return StringIndicators.allOk;
             else
             {
                 foreach (var group in _DAL.GetElementGroups())
                 {
-                    if (group.GroupNumber <= currentGroupNum)
+                    if (group.GroupNumber < currentGroupNum)
                     {
                         if (!DidGroupElemsWork(group.GetElementNames()).ValidationPassed())
                             return DidGroupElemsWork(group.GetElementNames());
                     }
 
                     else
-                        return OperationResultIndicators.allOk;
+                        return StringIndicators.allOk;
                 }
             }
 
-            return OperationResultIndicators.errorMessage;
+            return StringIndicators.errorMessage;
         }
 
         public Dictionary<string, Point> LoadAutomatChainAppearance()
@@ -89,7 +78,7 @@ namespace BuisnessLogic
         public void SaveAutomatChainAppearance(Dictionary<string, Point> nameAndLocationPair)
         {
             _DAL.SaveAutomatChainConfiguration(DivideAutomatByGroups(nameAndLocationPair.OrderBy((pair) => pair.Value.X)
-                .ToDictionary<KeyValuePair<string, Point>, string, Point>(pair => pair.Key, pair => pair.Value)));
+                .ToDictionary(pair => pair.Key, pair => pair.Value)));
         }
 
 
@@ -145,5 +134,22 @@ namespace BuisnessLogic
             return -1;
         }
 
+        public string CalculateAutomatInputSignals(string automatName)
+            => _DAL.CalculateGroupOutputSignal(
+                GetGroupNames(
+                    _DAL.GetElementGroups()
+                    .ElementAt(GetAutomatGroup(automatName) - 2).GroupElements));
+
+        List<string> GetGroupNames(IEnumerable<ChainElemViewInfo> groupElements)
+        {
+            List<string> result = new List<string>();
+
+            foreach (var item in groupElements)
+            {
+                result.Add(item.AutomatName);
+            }
+
+            return result;
+        }
     }
 }

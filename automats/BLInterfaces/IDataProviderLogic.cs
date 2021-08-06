@@ -8,8 +8,10 @@ namespace BLInterfaces
     {
         List<string> GetData(string path);
 
-        bool AddAutomatData(string automatTablesFileName, string inputSignalsString, string outputSignalsString, string automatName);
+        bool AddAutomatData(string automatTablesFileName, string inputSignalsString, string outputSignalsString, string automatName, string startConditions);
 
         Automat ParseAutomatDataTables(string pathToFile);
+
+        ChainElementSettings LoadAutomatSettings(string automatName);
     }
 }

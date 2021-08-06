@@ -137,6 +137,11 @@
             this.Name = "ModellingForm";
             this.Text = "Один автомат";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
+            this.Load += new System.EventHandler(this.ModellingForm_Load);
+            this.Controls.SetChildIndex(this.richTextBox3, 0);
+            this.Controls.SetChildIndex(this.richTextBox4, 0);
+            this.Controls.SetChildIndex(this.tableLabel, 0);
+            this.Controls.SetChildIndex(this.insertAut, 0);
             this.Controls.SetChildIndex(this.label1, 0);
             this.Controls.SetChildIndex(this.label2, 0);
             this.Controls.SetChildIndex(this.startConditionsTextBox, 0);

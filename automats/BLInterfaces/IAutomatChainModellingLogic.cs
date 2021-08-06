@@ -12,7 +12,7 @@ namespace BLInterfaces
 
         void EndAutomatChainModelling();
 
-        string CalculateGroupOutputSignals(int groupNum, IEnumerable<string> groupElems);
+        string CalculateAutomatInputSignals(string automatName);
 
         bool DidAutomatWork(string automatName);
 

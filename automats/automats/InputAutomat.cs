@@ -35,7 +35,7 @@ namespace PresentationLayer
             }
         }
 
-        void UpdateUserInterface(Automat automat)
+        protected void UpdateUserInterface(Automat automat)
         {
             int condNum = automat.DeltaTable.GetLength(0);
 

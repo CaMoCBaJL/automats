@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
+using CommonConstants;
+using Dependencies;
 
 namespace PresentationLayer
 {
@@ -20,6 +22,19 @@ namespace PresentationLayer
         private void button2_Click(object sender, EventArgs e)
         {
             this.Hide();
+
+            if (DependencyResolver.Instance.ChainModellingBL.IsChainModellingModeActive())
+            {
+                if (MessageBox.Show(StringIndicators.resumeTheWorkDialogue,
+                MessageBoxTitles.chooseAction, MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+                                    == DialogResult.No)
+                {
+                    DependencyResolver.Instance.ChainModellingBL.EndAutomatChainModelling();
+
+                    DependencyResolver.Instance.ChainModellingBL.StartAutomatChainModelling();
+                }
+            }
+
             new AutomatChainModellingForm().Show();
         }
 

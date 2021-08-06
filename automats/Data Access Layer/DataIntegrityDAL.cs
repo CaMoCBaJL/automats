@@ -13,6 +13,12 @@ namespace DataAccessLayer
         public IEnumerable<string> GetData(string pathToFile) => File.ReadAllText(pathToFile).Split(new char[] { '\n', '\r' },
                 StringSplitOptions.RemoveEmptyEntries);
 
+        public ChainElementSettings LoadAutomatSettings(string automatName)
+            => JsonConvert.DeserializeObject<ChainElementSettings>(
+                File.ReadAllText(
+                    PathConstants.automatChainModellingFolder + Path.DirectorySeparatorChar + automatName + ".json"));
+        
+
         public (int[,] DeltaTable, string[,] LambdaTable) ParseAutomatData(string pathToFile)
             => new AutomatParser(pathToFile).ParseData();
         

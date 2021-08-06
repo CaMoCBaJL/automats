@@ -12,6 +12,8 @@ namespace BLInterfaces
 
         string CalculateOutputSignals(Dictionary<int, List<AutomatConfiguration>> dataToCalculate);
 
+        string CalculateStartConditions(Dictionary<int, List<AutomatConfiguration>> dataToCalculate);
+
         List<int> GetDistinctStartConditionsSet(string conditionsString);
     }
 }

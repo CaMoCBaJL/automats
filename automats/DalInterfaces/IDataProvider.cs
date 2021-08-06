@@ -10,5 +10,7 @@ namespace DalInterfaces
         IEnumerable<string> GetData(string pathToFile);
 
         bool SaveAutomatWorkData(ChainElementSettings automatData);
+
+        ChainElementSettings LoadAutomatSettings(string automatName);
     }
 }

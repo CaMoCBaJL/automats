@@ -46,7 +46,7 @@ namespace DataAccessLayer
         {
             foreach (string fileName in groupElems)
             {
-                if (!File.Exists(fileName))
+                if (!File.Exists(PathConstants.automatChainModellingFolder + "/" + fileName +".json"))
                     return false;
             }
 
@@ -61,7 +61,7 @@ namespace DataAccessLayer
             StringBuilder result = new StringBuilder();
 
             foreach (string fileName in groupElems)
-                result.Append(GetChainElement(fileName).OutputSignalString);
+                result.Append(GetChainElement(PathConstants.automatChainModellingFolder + "/" + fileName + ".json").OutputSignalString);
 
             return result.ToString();
         }
