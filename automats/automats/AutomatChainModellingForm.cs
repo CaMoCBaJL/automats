@@ -47,13 +47,21 @@ namespace PresentationLayer
 
             for (int j = 0; j < groups.Count; j++)
             {
+                var currentGroup = drawer.GetGroupLabels(groups[j].GroupElements, Controls);
+
+                drawer.AlignGroupByXAxis(currentGroup);
+
                 if (j > 0)
-                    drawer.ConnectGroups(globalGraphics, drawer.GetGroupLabels(j, groups[j].GroupElements, Controls),
-                        drawer.GetGroupLabels(j - 1, groups[j - 1].GroupElements, Controls), -offset, labelWidth);
+                {
+                    var previousGroup = drawer.GetGroupLabels(groups[j - 1].GroupElements, Controls);
 
-                drawer.ConnectOneGroupElems(globalGraphics, drawer.GetGroupLabels(j, groups[j].GroupElements, Controls), -offset);
+                    drawer.ConnectGroups(globalGraphics, currentGroup,
+                        previousGroup, -offset, labelWidth);
+                }
 
-                drawer.ConnectOneGroupElems(globalGraphics, drawer.GetGroupLabels(j, groups[j].GroupElements, Controls), labelWidth + offset);
+                drawer.ConnectOneGroupElems(globalGraphics, currentGroup, -offset);
+
+                drawer.ConnectOneGroupElems(globalGraphics, currentGroup, labelWidth + offset);
             }
         }
 
@@ -136,6 +144,8 @@ namespace PresentationLayer
             {
                 AddAutomat(item.Key, item.Value);
             }
+
+            DependencyResolver.Instance.ChainModellingBL.SaveAutomatChainAppearance(GetLabelData());
         }
 
         void AddAutomat(string automatName, Point labelLocation)
@@ -161,6 +171,8 @@ namespace PresentationLayer
         private void pictureBox1_Paint(object sender, PaintEventArgs e)
         {
             globalGraphics = e.Graphics;
+
+            DependencyResolver.Instance.ChainModellingBL.SaveAutomatChainAppearance(GetLabelData());
 
             LabelsAreParallel();
         }

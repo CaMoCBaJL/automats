@@ -88,8 +88,10 @@ namespace BuisnessLogic
 
         public void SaveAutomatChainAppearance(Dictionary<string, Point> nameAndLocationPair)
         {
-            _DAL.SaveAutomatChainConfiguration(DivideAutomatByGroups(nameAndLocationPair));
+            _DAL.SaveAutomatChainConfiguration(DivideAutomatByGroups(nameAndLocationPair.OrderBy((pair) => pair.Value.X)
+                .ToDictionary<KeyValuePair<string, Point>, string, Point>(pair => pair.Key, pair => pair.Value)));
         }
+
 
         public List<ChainModellingGroupOfElements> DivideAutomatByGroups(Dictionary<string, Point> dataToDivision)
         {
@@ -115,12 +117,11 @@ namespace BuisnessLogic
                     if (item.Key == elemToCompare.Key)
                         continue;
 
-                    if (Math.Abs(item.Value.X - elemToCompare.Value.X) < 20)
+                    if (Math.Abs(item.Value.X - elemToCompare.Value.X) <= 20)
                         group.Add(new ChainElemViewInfo(item.Value, item.Key));
                 }
 
-                if (group.Count == 0)
-                    group.Add(new ChainElemViewInfo(elemToCompare.Value, elemToCompare.Key));
+                group.Add(new ChainElemViewInfo(elemToCompare.Value, elemToCompare.Key));
 
                 group.ForEach((KeyValuePair) => dataToDivision.Remove(KeyValuePair.AutomatName));
 
@@ -135,7 +136,7 @@ namespace BuisnessLogic
 
         public int GetAutomatGroup(string automatName)
         {
-            foreach(var element in _DAL.LoadAutomatChainConfiguration())
+            foreach (var element in _DAL.LoadAutomatChainConfiguration())
             {
                 if (element.GroupElements.Any((elemInfo) => elemInfo.AutomatName == automatName))
                     return element.GroupNumber;
@@ -144,5 +145,5 @@ namespace BuisnessLogic
             return -1;
         }
 
-   }
+    }
 }

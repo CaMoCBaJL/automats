@@ -11,7 +11,7 @@ namespace CommonLogic
 {
     public class DrawingLogic
     {
-        public List<Label> GetGroupLabels(int groupNum, List<ChainElemViewInfo> groupElementsData, ControlCollection formElements)
+        public List<Label> GetGroupLabels(List<ChainElemViewInfo> groupElementsData, ControlCollection formElements)
         {
             List<Label> labels = new List<Label>();
 
@@ -22,15 +22,34 @@ namespace CommonLogic
                     {
                         labels.Add((item as Label));
                     }
-            }
 
-            AlignTheGroupByTheXAxis(labels);
+            }
 
             return labels;
         }
 
+        public void AlignGroupByXAxis(List<Label> group)
+        {
+            if (group.Count > 1)
+                for (int i = 1; i < group.Count; i++)
+                {
+                    group[i].Location = new Point(group[0].Location.X, group[i].Location.Y);
+                }
+        }
+
         public void ConnectOneGroupElems(Graphics g, List<Label> labels, int offsetX)
         {
+            labels.Sort((Label l1, Label l2) =>
+            {
+                if (l1.Location.Y > l2.Location.Y)
+                    return 1;
+                else if (l2.Location.Y > l1.Location.Y)
+                    return -1;
+                else
+                    return 0;
+
+            });
+
             if (labels.Count > 1)
             {
                 Label l1 = labels[0];
@@ -145,14 +164,6 @@ namespace CommonLogic
 
         static int CalculateFontHeight(int linesAmount) => (int)(linesAmount * FontLogic.LetterHeight * FontLogic.heightScaleCoef) + 13;
 
-        void AlignTheGroupByTheXAxis(List<Label> group)
-        {
-            if (group.Count > 1)
-                for (int i = 1; i < group.Count; i++)
-                {
-                    group[i].Location = new Point(group[0].Location.X, group[i].Location.Y);
-                }
-        }
 
         public Point GetCentralPoint(List<Label> group, int labelWidth, int offset)
         {
