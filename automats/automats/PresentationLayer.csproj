@@ -145,6 +145,10 @@
       <Project>{c6258d12-26c4-4f2d-b0eb-cef14365f75b}</Project>
       <Name>CommonLogic</Name>
     </ProjectReference>
+    <ProjectReference Include="..\DataValidation\DataValidation.csproj">
+      <Project>{f67bc771-46d2-44c6-b55f-8524d88e27b8}</Project>
+      <Name>DataValidation</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DependecyResolver\Dependencies.csproj">
       <Project>{d7c5f302-319f-4d7a-9b60-d183335c0b61}</Project>
       <Name>Dependencies</Name>

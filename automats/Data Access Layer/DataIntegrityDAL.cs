@@ -13,23 +13,9 @@ namespace DataAccessLayer
         public IEnumerable<string> GetData(string pathToFile) => File.ReadAllText(pathToFile).Split(new char[] { '\n', '\r' },
                 StringSplitOptions.RemoveEmptyEntries);
 
-        public IEnumerable<ChainModellingGroupOfElements> LoadAutomatChainConfiguration()
-        {
-            if (File.Exists(PathConstants.chainModellingConfigurationFile))
-                return JsonConvert.DeserializeObject<List<ChainModellingGroupOfElements>>(PathConstants.chainModellingConfigurationFile);
-            else
-                return new ChainModellingGroupOfElements[] { };
-        }
-
         public (int[,] DeltaTable, string[,] LambdaTable) ParseAutomatData(string pathToFile)
             => new AutomatParser(pathToFile).ParseData();
         
-
-        public void SaveAutomatChainConfiguration(IEnumerable<ChainModellingGroupOfElements> chainConfiguration)
-        {
-            File.WriteAllText(JsonConvert.SerializeObject(chainConfiguration), PathConstants.chainModellingConfigurationFile);
-        }
-
         public bool SaveAutomatWorkData(ChainElementSettings automatData)
         {
             try

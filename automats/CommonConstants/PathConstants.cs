@@ -4,8 +4,8 @@ namespace CommonConstants
 {
     public static class PathConstants
     {
-        public const string automatChainModellingFolder = "./ChainModelling";
+        public const string automatChainModellingFolder = @"./ChainModelling";
 
-        public static string chainModellingConfigurationFile = automatChainModellingFolder + Path.DirectorySeparatorChar + "Config.json";
+        public static string chainModellingConfigurationFile = @"./ChainModelling/Config.json";
     }
 }

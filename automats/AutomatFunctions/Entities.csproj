@@ -50,7 +50,6 @@
     <Compile Include="AGroupType.cs" />
     <Compile Include="Automat.cs" />
     <Compile Include="AutomatConfiguration.cs" />
-    <Compile Include="AutOptions.cs" />
     <Compile Include="ChainElementSettings.cs" />
     <Compile Include="ChainElemViewInfo.cs" />
     <Compile Include="ChainModellingGroupOfElements.cs" />

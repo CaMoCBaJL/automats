@@ -20,5 +20,9 @@ namespace DalInterfaces
         ChainElementSettings GetChainElement(string pathToFile);
 
         IEnumerable<ChainModellingGroupOfElements> GetElementGroups();
+
+        void SaveAutomatChainConfiguration(IEnumerable<ChainModellingGroupOfElements> chainConfiguration);
+
+        IEnumerable<ChainModellingGroupOfElements> LoadAutomatChainConfiguration();
     }
 }

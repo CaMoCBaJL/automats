@@ -1,4 +1,4 @@
-﻿namespace BuisnessLogic
+﻿namespace DataValidation
 {
     public static class IsStringValid
     {

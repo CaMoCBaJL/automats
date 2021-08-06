@@ -9,10 +9,6 @@ namespace DalInterfaces
 
         IEnumerable<string> GetData(string pathToFile);
 
-        void SaveAutomatChainConfiguration(IEnumerable<ChainModellingGroupOfElements> chainConfiguration);
-
-        IEnumerable<ChainModellingGroupOfElements> LoadAutomatChainConfiguration();
-
         bool SaveAutomatWorkData(ChainElementSettings automatData);
     }
 }

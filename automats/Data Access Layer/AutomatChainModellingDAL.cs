@@ -23,13 +23,28 @@ namespace DataAccessLayer
                 Directory.Delete(PathConstants.automatChainModellingFolder, true);
         }
 
+        public void SaveAutomatChainConfiguration(IEnumerable<ChainModellingGroupOfElements> chainConfiguration)
+        {
+            File.WriteAllText(PathConstants.chainModellingConfigurationFile, JsonConvert.SerializeObject(chainConfiguration));
+        }
+
+        public IEnumerable<ChainModellingGroupOfElements> LoadAutomatChainConfiguration()
+        {
+            if (File.Exists(PathConstants.chainModellingConfigurationFile))
+                if (!string.IsNullOrEmpty(File.ReadAllText(PathConstants.chainModellingConfigurationFile)))
+                    return JsonConvert.DeserializeObject<List<ChainModellingGroupOfElements>>(
+                        File.ReadAllText(PathConstants.chainModellingConfigurationFile));
+
+            return new ChainModellingGroupOfElements[] { };
+        }
+
         public bool DidAutomatWork(string fileName)
         => File.Exists(fileName);
-        
+
 
         public bool DidGroupElementsWork(IEnumerable<string> groupElems)
         {
-            foreach(string fileName in groupElems)
+            foreach (string fileName in groupElems)
             {
                 if (!File.Exists(fileName))
                     return false;

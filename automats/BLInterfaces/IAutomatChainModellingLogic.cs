@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Entities;
+using System.Collections.Generic;
+using System.Drawing;
 
 namespace BLInterfaces
 {
@@ -18,6 +20,14 @@ namespace BLInterfaces
 
         string DidAllPreviousGroupsWork(int currentGroupNum);
 
+        int GetAutomatGroup(string automatName);
 
+        List<ChainModellingGroupOfElements> DivideAutomatByGroups(Dictionary<string, Point> dataToDivision);
+
+        void SaveAutomatChainAppearance(Dictionary<string, Point> nameAndLocationPair);
+
+        Dictionary<string, Point> LoadAutomatChainAppearance();
+
+        List<ChainModellingGroupOfElements> LoadAutomatGroups();
     }
 }

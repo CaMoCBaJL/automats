@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{9B902A59-F2DA-4A7C-AEF2-74C62D32DC94}</ProjectGuid>
+    <ProjectGuid>{F67BC771-46D2-44C6-B55F-8524D88E27B8}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BuisnessLogic</RootNamespace>
-    <AssemblyName>BuisnessLogic</AssemblyName>
+    <RootNamespace>DataValidation</RootNamespace>
+    <AssemblyName>DataValidation</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -33,7 +33,6 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -42,37 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AutomatChainModellingLogic.cs" />
-    <Compile Include="DataProvidingLogic.cs" />
-    <Compile Include="ExperimentLogic.cs" />
-    <Compile Include="ModellingLogic.cs" />
+    <Compile Include="IsStringValid.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\AutomatFunctions\Entities.csproj">
-      <Project>{0312b0ce-cbd9-40fc-8fe6-e2e43340568b}</Project>
-      <Name>Entities</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\BLInterfaces\BLInterfaces.csproj">
-      <Project>{6bf7340d-4165-4834-ad3e-b8ca741617b6}</Project>
-      <Name>BLInterfaces</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\CommonConstants\CommonConstants.csproj">
-      <Project>{ee454f6a-f369-4d05-b105-614f89745d45}</Project>
-      <Name>CommonConstants</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\CommonLogic\CommonLogic.csproj">
-      <Project>{c6258d12-26c4-4f2d-b0eb-cef14365f75b}</Project>
-      <Name>CommonLogic</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\DalInterfaces\DalInterfaces.csproj">
-      <Project>{174735b1-d004-48a3-89a6-b2dab19b2255}</Project>
-      <Name>DalInterfaces</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\DataValidation\DataValidation.csproj">
-      <Project>{f67bc771-46d2-44c6-b55f-8524d88e27b8}</Project>
-      <Name>DataValidation</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
