@@ -11,45 +11,48 @@ namespace BuisnessLogic
     public class ModellingLogic : IAutomatModellingLogic
     {
         public Dictionary<int, List<AutomatConfiguration>> ModelTheAutomatWork(
-            List<int> startCondtions, List<string> inputSignals, Automat automat, int iterationsNum)
+            SortedSet<int> startCondtions, List<string> inputSignals, Automat automat, int iterationsNum)
         {
             Dictionary<int, List<AutomatConfiguration>> result = new Dictionary<int, List<AutomatConfiguration>>();
 
             List<string> inputSignalsCollection = GetInputSignalsCollection(inputSignals).Cast<string>().ToList<string>();
 
-            foreach (int condition in startCondtions)
-            {
-                result.Add(condition, new List<AutomatConfiguration>());
+            AddFirstConfigurations(ref result, startCondtions);
 
-                result[condition].Add(new AutomatConfiguration("-", condition, "-"));
-            }
-
-            for (int iterCounter = 0; iterCounter < iterationsNum + 1; iterCounter++)
+            for (int iterCounter = 0; iterCounter < iterationsNum; iterCounter++)
             {
                 if (iterCounter > 0)
-                {
-                    var data = ConstructStartData(result);
-
-                    inputSignals = data.outputSignals;
-                }
-
+                    inputSignals = ConstructStartData(result).outputSignals;
+                
                 for (int i = 0; i < inputSignals.Count; i++)
                 {
                     foreach (var condition in result.Keys)
                     {
-                        result[condition].Add(new AutomatConfiguration(inputSignals[i],
-
-                            Automat.AutomatFunction<int>(automat.DeltaTable, result[condition][result[condition].Count - 1].Condition - 1,
-                            inputSignalsCollection.IndexOf(inputSignals[i])),
-
-                            Automat.AutomatFunction<string>(automat.LambdaTable, result[condition][result[condition].Count - 1].Condition - 1,
-                            inputSignalsCollection.IndexOf(inputSignals[i]))));
+                        result[condition].Add(TactOfWork(inputSignals[i], result[condition][result[condition].Count - 1].Condition - 1,
+                            automat, inputSignalsCollection.IndexOf(inputSignals[i])));
                     }
                 }
             }
 
             return result;
         }
+
+        void AddFirstConfigurations(ref Dictionary<int, List<AutomatConfiguration>> result, SortedSet<int> startConditions)
+        {
+            foreach (int condition in startConditions)
+            {
+                result.Add(condition, new List<AutomatConfiguration>());
+
+                result[condition].Add(new AutomatConfiguration("-", condition, "-"));
+            }
+        }
+
+        internal static AutomatConfiguration TactOfWork(string inputSignal, int condition, Automat automat, int inputSignalNum)
+            => new AutomatConfiguration(inputSignal,
+
+                Automat.AutomatFunction(automat.DeltaTable, condition, inputSignalNum),
+
+                Automat.AutomatFunction(automat.LambdaTable, condition, inputSignalNum));
 
         (List<int> conditions, List<string> outputSignals) ConstructStartData(Dictionary<int, List<AutomatConfiguration>> data)
         {
@@ -112,7 +115,10 @@ namespace BuisnessLogic
             return result.ToString();
         }
 
-        public List<int> GetDistinctStartConditionsSet(string conditionsString)
+        internal static List<int> GetDistinctStartConditionsSet(Automat automat)
+            => new SortedSet<int>(automat.DeltaTable.Cast<int>()).ToList();
+
+        public SortedSet<int> GetDistinctStartConditionsSet(string conditionsString)
         {
             SortedSet<int> result = new SortedSet<int>();
 
@@ -121,7 +127,7 @@ namespace BuisnessLogic
                 result.Add(int.Parse(item));
             }
 
-            return result.ToList();
+            return result;
         }
 
         public string CalculateStartConditions(Dictionary<int, List<AutomatConfiguration>> dataToCalculate)

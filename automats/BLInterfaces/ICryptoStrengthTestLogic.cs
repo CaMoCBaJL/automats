@@ -10,5 +10,7 @@ namespace BLInterfaces
         StrengthTestResultMarks MarkTestResult();
 
         ModellingStepData ParseModellingStepResult(List<AutomatConfiguration> data);
+
+        StrengthTestResultMarks TestStart(Automat automat, string inputString, List<string> inputSignalsAlphabet);
     }
 }

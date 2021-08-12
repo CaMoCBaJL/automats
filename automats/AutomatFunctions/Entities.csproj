@@ -55,8 +55,10 @@
     <Compile Include="ChainModellingGroupOfElements.cs" />
     <Compile Include="ExecutionType.cs" />
     <Compile Include="ExperimentType.cs" />
+    <Compile Include="ModellingStepData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SigmaSet.cs" />
+    <Compile Include="StregthTestResults.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

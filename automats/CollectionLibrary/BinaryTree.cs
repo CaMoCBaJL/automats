@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Entities;
 
-namespace CollectionLibrary
+namespace CommonCollections
 {
     public class BinaryTree
     {
@@ -17,20 +14,38 @@ namespace CollectionLibrary
             _storage = new List<ModellingStepData>();
         }
 
-        public BinaryTree (IEnumerable<ModellingStepData> data)
+        public BinaryTree(IEnumerable<ModellingStepData> data)
         {
             _storage = data.ToList();
         }
 
-        public bool Add(ModellingStepData stepData)
+        public bool Add(ModellingStepData stepData, out ModellingStepData cicleCondition)
         {
-            return true;
+            int indx = BinarySearch(stepData.OutputSignals);
+
+            if (indx > 0)
+            {
+                _storage.Insert(indx, stepData);
+
+                cicleCondition = new ModellingStepData();
+
+                return true;
+            }
+            else
+            {
+                cicleCondition =  _storage[stepData.OutputSignals];
+
+                _storage[stepData.OutputSignals] = stepData;
+
+                return false;
+            }
         }
 
-        public bool Remove(int index)
-        {
-            return true;
-        }
+        public IEnumerable<ModellingStepData> GetCycledSteps(int lastStep, int firstStep)
+            => _storage.Skip(firstStep).Take(lastStep - firstStep);
+
+        public bool Remove(ModellingStepData data)
+        => _storage.Remove(data);
 
         int BinarySearch(int elementOutputSignals)
         {
@@ -45,7 +60,7 @@ namespace CollectionLibrary
                 step = step / 2 + step % 2;
 
                 if (_storage[n].OutputSignals == elementOutputSignals)
-                    return n;
+                    return -n;
 
                 if (_storage[n].OutputSignals > elementOutputSignals)
                     n -= step;

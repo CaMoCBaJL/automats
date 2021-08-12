@@ -46,8 +46,6 @@ namespace CommonLogic
             return result;
         }
 
-        //todo Test the code!!!
-
         public Dictionary<int, List<int>> FindAllPairsToConnect(Dictionary<int, List<AutomatConfiguration>> modellingResult)
         {
             Dictionary<int, List<int>> result = new Dictionary<int, List<int>>();

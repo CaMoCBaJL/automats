@@ -53,7 +53,7 @@ namespace PresentationLayer
                 {
                     try
                     {
-                        int iterCounter = 0;
+                        int iterCounter = 1;
 
                         if (!string.IsNullOrEmpty(textBox1.Text.Trim()))
                             int.TryParse(textBox1.Text, out iterCounter);

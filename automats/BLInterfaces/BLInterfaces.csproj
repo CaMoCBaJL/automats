@@ -45,6 +45,7 @@
     <Compile Include="IAutomatExperimentLogic.cs" />
     <Compile Include="IAutomatModellingLogic.cs" />
     <Compile Include="IAutomatChainModellingLogic.cs" />
+    <Compile Include="ICryptoStrengthTestLogic.cs" />
     <Compile Include="IDataProviderLogic.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

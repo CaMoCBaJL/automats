@@ -46,6 +46,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AutomatCryptoStrengthTestForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AutomatCryptoStrengthTestForm.Designer.cs">
+      <DependentUpon>AutomatCryptoStrengthTestForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="ExperimentForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -84,6 +90,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="AutomatCryptoStrengthTestForm.resx">
+      <DependentUpon>AutomatCryptoStrengthTestForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ExperimentForm.resx">
       <DependentUpon>ExperimentForm.cs</DependentUpon>
     </EmbeddedResource>

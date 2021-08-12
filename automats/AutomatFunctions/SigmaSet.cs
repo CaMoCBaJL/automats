@@ -42,8 +42,6 @@ namespace Entities
         public SigmaSet(KeyValuePair<string, List<int>> keyValuePair)
         {
             Add(keyValuePair.Key, keyValuePair.Value);
-
-
         }
 
         void DefineSigmaSetType()

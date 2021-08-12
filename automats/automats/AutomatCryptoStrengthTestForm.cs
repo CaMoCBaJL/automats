@@ -27,10 +27,6 @@ namespace PresentationLayer
             if (k.ShowDialog() == DialogResult.OK)
             {
                 AutomatStrengthTestInputString = k.FileName;
-
-                CurrentAutomat = DependencyResolver.Instance.BL.ParseAutomatDataTables(InputFileName);
-
-                UpdateUserInterface(CurrentAutomat);
             }
         }
     }

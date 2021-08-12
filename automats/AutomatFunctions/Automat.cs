@@ -7,10 +7,7 @@
         public string[,] LambdaTable { get; private set; }
 
 
-        public Automat()
-        {
-
-        }
+        public Automat(){}
 
         public void SetDeltaTable(int[,] conditionsTable) => DeltaTable = conditionsTable;
 

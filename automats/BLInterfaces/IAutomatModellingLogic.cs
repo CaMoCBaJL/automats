@@ -6,7 +6,7 @@ namespace BLInterfaces
     public interface IAutomatModellingLogic
     {
         Dictionary<int, List<AutomatConfiguration>> ModelTheAutomatWork(
-            List<int> startCondtions, List<string> inputSignals, Automat automat, int iterationsNum);
+            SortedSet<int> startCondtions, List<string> inputSignals, Automat automat, int iterationsNum);
 
         string CalculateInputSignals(string textToSplit);
 
@@ -14,6 +14,6 @@ namespace BLInterfaces
 
         string CalculateStartConditions(Dictionary<int, List<AutomatConfiguration>> dataToCalculate);
 
-        List<int> GetDistinctStartConditionsSet(string conditionsString);
+        SortedSet<int> GetDistinctStartConditionsSet(string conditionsString);
     }
 }
