@@ -7,7 +7,7 @@ namespace BLInterfaces
     {
         string ParseInputData(string fileName);
 
-        StrengthTestResultMarks MarkTestResult();
+        StrengthTestResultMarks MarkTestResult(Dictionary<ModellingStepData, ModellingStepData> cyclesData, string inputString);
 
         ModellingStepData ParseModellingStepResult(List<AutomatConfiguration> data, int stepNumber);
 

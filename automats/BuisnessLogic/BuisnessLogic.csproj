@@ -43,7 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AutomatChainModellingLogic.cs" />
-    <Compile Include="CryptoStrengthTestLogic.cs" />
+    <Compile Include="BinaryCryptoStrengthTestLogic.cs" />
     <Compile Include="DataProvidingLogic.cs" />
     <Compile Include="ExperimentLogic.cs" />
     <Compile Include="ModellingLogic.cs" />
@@ -73,6 +73,10 @@
     <ProjectReference Include="..\DalInterfaces\DalInterfaces.csproj">
       <Project>{174735b1-d004-48a3-89a6-b2dab19b2255}</Project>
       <Name>DalInterfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Data Access Layer\DataAccessLayer.csproj">
+      <Project>{f3699319-6260-486e-bda6-069c407275ed}</Project>
+      <Name>DataAccessLayer</Name>
     </ProjectReference>
     <ProjectReference Include="..\DataValidation\DataValidation.csproj">
       <Project>{f67bc771-46d2-44c6-b55f-8524d88e27b8}</Project>
