@@ -1,9 +1,9 @@
 ﻿using BLInterfaces;
 using DalInterfaces;
 using System.Collections.Generic;
-using System.Drawing;
 using Entities;
-using CommonLogic;
+using System.Text; 
+
 namespace BuisnessLogic
 {
     public class DataProvidingLogic : IDataProviderLogic
@@ -22,7 +22,6 @@ namespace BuisnessLogic
         public ChainElementSettings LoadAutomatSettings(string automatName)
            => _DAL.LoadAutomatSettings(automatName);
         
-
         public Automat ParseAutomatDataTables(string pathToFile)
         {
             var automat = new Automat();
@@ -36,6 +35,16 @@ namespace BuisnessLogic
             return automat;
         }
 
-        
+        public string ReadAllBytesFromFile(string fileName)
+        {
+            StringBuilder result = new StringBuilder();
+
+            foreach(var dataPiece in _DAL.ReadAllBytes(fileName))
+            {
+                result.Append(dataPiece.ToString());
+            }
+
+            return result.ToString();
+        }
     }
 }

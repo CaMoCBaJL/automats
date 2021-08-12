@@ -21,7 +21,10 @@ namespace DataAccessLayer
 
         public (int[,] DeltaTable, string[,] LambdaTable) ParseAutomatData(string pathToFile)
             => new AutomatParser(pathToFile).ParseData();
-        
+
+        public byte[] ReadAllBytes(string fileName)
+        => File.ReadAllBytes(fileName);
+
         public bool SaveAutomatWorkData(ChainElementSettings automatData)
         {
             try

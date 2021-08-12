@@ -4,6 +4,7 @@ using BLInterfaces;
 using Entities;
 using CommonCollections;
 using System.Text;
+using DataAccessLayer;
 
 namespace BuisnessLogic
 {
@@ -15,10 +16,8 @@ namespace BuisnessLogic
         }
 
         public string ParseInputData(string fileName)
-        {
-            throw new NotImplementedException();
-        }
-
+            => new DataProvidingLogic(new DataIntegrityDAL()).ReadAllBytesFromFile(fileName);
+        
         public ModellingStepData ParseModellingStepResult(List<AutomatConfiguration> data, int stepNumber)
             => new ModellingStepData(ParseCondtions(data), ParseOutputSignals(data), stepNumber);
 

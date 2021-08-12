@@ -12,5 +12,7 @@ namespace DalInterfaces
         bool SaveAutomatWorkData(ChainElementSettings automatData);
 
         ChainElementSettings LoadAutomatSettings(string automatName);
+
+        byte[] ReadAllBytes(string fileName);
     }
 }

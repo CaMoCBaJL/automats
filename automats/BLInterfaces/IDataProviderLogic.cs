@@ -13,5 +13,7 @@ namespace BLInterfaces
         Automat ParseAutomatDataTables(string pathToFile);
 
         ChainElementSettings LoadAutomatSettings(string automatName);
+
+        string ReadAllBytesFromFile(string fileName);
     }
 }
