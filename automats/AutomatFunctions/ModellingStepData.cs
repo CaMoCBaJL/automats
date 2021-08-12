@@ -7,5 +7,17 @@
         public int OutputSignals { get; }
 
         public int StepNumber { get; }
+
+
+        public ModellingStepData() { }
+
+        public ModellingStepData(string conditions, int outputSignals, int stepNumber)
+        {
+            Conditions = conditions;
+
+            OutputSignals = outputSignals;
+
+            StepNumber = stepNumber;
+        }
     }
 }

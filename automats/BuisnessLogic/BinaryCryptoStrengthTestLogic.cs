@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using BLInterfaces;
 using Entities;
 using CommonCollections;
+using System.Text;
 
 namespace BuisnessLogic
 {
-    class CryptoStrengthTestLogic : ICryptoStrengthTestLogic
+    class BinaryCryptoStrengthTestLogic : ICryptoStrengthTestLogic
     {
         public StrengthTestResultMarks MarkTestResult()
         {
@@ -18,9 +19,36 @@ namespace BuisnessLogic
             throw new NotImplementedException();
         }
 
-        public ModellingStepData ParseModellingStepResult(List<AutomatConfiguration> data)
+        public ModellingStepData ParseModellingStepResult(List<AutomatConfiguration> data, int stepNumber)
+            => new ModellingStepData(ParseCondtions(data), ParseOutputSignals(data), stepNumber);
+
+        string ParseCondtions(List<AutomatConfiguration> data)
         {
-            throw new NotImplementedException();
+            StringBuilder result = new StringBuilder();
+
+            foreach (var item in data)
+            {
+                result.Append(item.Condition);
+            }
+
+            return result.ToString();
+        }
+
+        int ParseOutputSignals(List<AutomatConfiguration> data)
+        {
+            int result = 0;
+
+            int maxDegree = (int)Math.Pow(2, data.Count);
+
+            foreach (var item in data)
+            {
+                if (item.OutputSignal == "1")
+                    result += maxDegree;
+
+                maxDegree /= 2;
+            }
+
+            return result;
         }
 
         public StrengthTestResultMarks TestStart(Automat automat, string inputString, List<string> inputSignalsAlphabet)
@@ -41,8 +69,8 @@ namespace BuisnessLogic
                         inputSignalsAlphabet.IndexOf(inputString.Substring(i, 1))));
                 }
 
-                if (!modellingStepsStorage.Add(ParseModellingStepResult(iteration), out ModellingStepData cicle))
-                    cicles.Add(cicle, ParseModellingStepResult(iteration));
+                if (!modellingStepsStorage.Add(ParseModellingStepResult(iteration, i), out ModellingStepData cicle))
+                    cicles.Add(cicle, ParseModellingStepResult(iteration, i));
 
                 conditions = UpdateConditionList(iteration);
             }
