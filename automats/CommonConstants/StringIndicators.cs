@@ -17,5 +17,17 @@
         public const string previousGroupWorked = "Previous group has already worked. Automat is ready to work.";
 
         public const string resumeTheWorkDialogue = "There is an earlier started project. Do you want to resume the work?";
+
+        public const string commonPart = "Current mode is ";
+
+        public const string mininalRestrictions = "This string describes minimal restrictions for test.\n Fill it with common info";
+
+        public const string weakRestrictions = "This string describes weak restrictions for test.\n Fill it with common info";
+
+        public const string averageRestrictions = "This string describes average restrictions for test.\n Fill it with common info";
+
+        public const string strongRestrictions = "This string describes strong restrictions for test.\n Fill it with common info";
+
+        public const string maximumRestrictions = "This string describes maximum restrictions for test.\n Fill it with common info";
     }
 }

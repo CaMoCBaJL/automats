@@ -33,5 +33,7 @@ namespace Dependencies
         public IAutomatModellingLogic AutomatModellingBL => new ModellingLogic();
 
         public IAutomatExperimentLogic AutomatExperimentLogic => new ExperimentLogic();
+
+        public ICryptoStrengthTestLogic BinaryCryptoStrengthTest => new BinaryCryptoStrengthTestLogic();
     }
 }

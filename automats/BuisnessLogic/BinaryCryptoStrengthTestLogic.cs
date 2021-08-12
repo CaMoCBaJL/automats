@@ -8,7 +8,7 @@ using DataAccessLayer;
 
 namespace BuisnessLogic
 {
-    class BinaryCryptoStrengthTestLogic : ICryptoStrengthTestLogic
+    public class BinaryCryptoStrengthTestLogic : ICryptoStrengthTestLogic
     {
         public string ParseInputData(string fileName)
             => new DataProvidingLogic(new DataIntegrityDAL()).ReadAllBytesFromFile(fileName);

@@ -13,11 +13,6 @@ namespace PresentationLayer
             InitializeComponent();
         }
 
-        private void richTextBox1_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
         private void inputFile_Click(object sender, EventArgs e)
         {
             OpenFileDialog k = new OpenFileDialog();
@@ -27,7 +22,14 @@ namespace PresentationLayer
             if (k.ShowDialog() == DialogResult.OK)
             {
                 AutomatStrengthTestInputString = k.FileName;
+
+                strengthTestInputString.Text =  DependencyResolver.Instance.BinaryCryptoStrengthTest.ParseInputData(AutomatStrengthTestInputString);
             }
+        }
+
+        private void testSettings_Click(object sender, EventArgs e)
+        {
+            new TestSettingsForm().Show();
         }
     }
 }
