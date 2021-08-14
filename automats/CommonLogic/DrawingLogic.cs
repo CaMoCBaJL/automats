@@ -231,5 +231,8 @@ namespace CommonLogic
                 * (stepX * ((labelNum / 2) + 1 - (labelNum % 2))
                 + offsetX * (labelNum / 2)
                 + offsetX / 2), stepY * layerNum);
+
+        static public Point CycleInfoLocation(int cycleNum) => new Point(20, 20 + cycleNum * 50);
     }
+
 }

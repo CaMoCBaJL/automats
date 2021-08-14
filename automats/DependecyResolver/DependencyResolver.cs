@@ -22,6 +22,9 @@ namespace Dependencies
         }
         #endregion
 
+
+        ICryptoStrengthTestDataTransmitterDAL cryptoStrengthTestDAL = new CryptoStrengthTestDAL();
+
         IDataProvider DAL => new DataIntegrityDAL();
 
         IAutomatChainModellingDAL ModellingDAL => new AutomatChainModellingDAL();
@@ -34,6 +37,6 @@ namespace Dependencies
 
         public IAutomatExperimentLogic AutomatExperimentLogic => new ExperimentLogic();
 
-        public ICryptoStrengthTestLogic BinaryCryptoStrengthTest => new BinaryCryptoStrengthTestLogic();
+        public ICryptoStrengthTestLogic BinaryCryptoStrengthTest => new BinaryCryptoStrengthTestLogic(cryptoStrengthTestDAL);
     }
 }

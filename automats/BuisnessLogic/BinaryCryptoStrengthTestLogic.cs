@@ -5,11 +5,20 @@ using Entities;
 using CommonCollections;
 using System.Text;
 using DataAccessLayer;
+using System.Threading.Tasks;
+using DalInterfaces;
 
 namespace BuisnessLogic
 {
     public class BinaryCryptoStrengthTestLogic : ICryptoStrengthTestLogic
     {
+        ICryptoStrengthTestDataTransmitterDAL _DAL;
+
+        public BinaryCryptoStrengthTestLogic(ICryptoStrengthTestDataTransmitterDAL dal) => _DAL = dal;
+
+
+        int ExecutionStep { get; set; }
+
         public string ParseInputData(string fileName)
             => new DataProvidingLogic(new DataIntegrityDAL()).ReadAllBytesFromFile(fileName);
 
@@ -45,7 +54,10 @@ namespace BuisnessLogic
             return result;
         }
 
-        public StrengthTestResultMarks TestStart(Automat automat, string inputString, List<string> inputSignalsAlphabet)
+        public async Task<StrengthTestResultMarks> StartTest(Automat automat, string inputString, List<string> inputSignalsAlphabet)
+            => await Task.Run(() => StrengthTest(automat, inputString, inputSignalsAlphabet));
+
+        StrengthTestResultMarks StrengthTest(Automat automat, string inputString, List<string> inputSignalsAlphabet)
         {
             var cycles = new Dictionary<ModellingStepData, ModellingStepData>();
 
@@ -55,11 +67,13 @@ namespace BuisnessLogic
 
             for (int i = 0; i < inputString.Length; i++)
             {
+                ExecutionStep = i;
+
                 List<AutomatConfiguration> modellingStep = new List<AutomatConfiguration>();
 
                 foreach (var condition in conditions)
                 {
-                    modellingStep.Add(ModellingLogic.TactOfWork(inputString.Substring(i, 1), condition, automat,
+                    modellingStep.Add(ModellingLogic.TactOfWork(inputString.Substring(i, 1), condition - 1, automat,
                         inputSignalsAlphabet.IndexOf(inputString.Substring(i, 1))));
                 }
 
@@ -114,5 +128,14 @@ namespace BuisnessLogic
 
             return StrengthTestResultMarks.Bad;
         }
+
+        public bool SaveExecutionData(ModellingStepData firstStep, ModellingStepData secondStep)
+        =>  _DAL.SaveExecutionData(firstStep, secondStep);
+
+        public Dictionary<ModellingStepData, ModellingStepData> LoadExecutionData()
+        => _DAL.LoadExecutionData();
+
+        public int GetExecutionStep()
+        => ExecutionStep;
     }
 }

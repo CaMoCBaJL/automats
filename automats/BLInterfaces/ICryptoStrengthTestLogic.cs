@@ -1,5 +1,6 @@
 ﻿using Entities;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace BLInterfaces
 {
@@ -11,6 +12,12 @@ namespace BLInterfaces
 
         ModellingStepData ParseModellingStepResult(List<AutomatConfiguration> data, int stepNumber);
 
-        StrengthTestResultMarks TestStart(Automat automat, string inputString, List<string> inputSignalsAlphabet);
+        Task<StrengthTestResultMarks> StartTest(Automat automat, string inputString, List<string> inputSignalsAlphabet);
+
+        bool SaveExecutionData(ModellingStepData firstStep, ModellingStepData secondStep);
+
+        Dictionary<ModellingStepData, ModellingStepData> LoadExecutionData();
+
+        int GetExecutionStep();
     }
 }

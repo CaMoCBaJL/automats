@@ -81,6 +81,7 @@ namespace PresentationLayer
             this.testStart.TabIndex = 25;
             this.testStart.Text = "Start test";
             this.testStart.UseVisualStyleBackColor = true;
+            this.testStart.Click += new System.EventHandler(this.testStart_Click);
             // 
             // hashFunctionParser
             // 

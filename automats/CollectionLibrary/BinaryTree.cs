@@ -23,7 +23,7 @@ namespace CommonCollections
         {
             int indx = BinarySearch(stepData.OutputSignals);
 
-            if (indx > 0)
+            if (indx >= 0)
             {
                 _storage.Insert(indx, stepData);
 
@@ -49,7 +49,7 @@ namespace CommonCollections
 
         int BinarySearch(int elementOutputSignals)
         {
-            int n = _storage.Count;
+            int n = _storage.Count - 1;
 
             int step = n / 2;
 
@@ -57,6 +57,9 @@ namespace CommonCollections
 
             while (step != 1)
             {
+                if (_storage.Count == 0)
+                    return 0;
+
                 step = step / 2 + step % 2;
 
                 if (_storage[n].OutputSignals == elementOutputSignals)

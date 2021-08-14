@@ -2,7 +2,8 @@
 using DalInterfaces;
 using System.Collections.Generic;
 using Entities;
-using System.Text; 
+using System.Text;
+using System;
 
 namespace BuisnessLogic
 {
@@ -41,7 +42,7 @@ namespace BuisnessLogic
 
             foreach(var dataPiece in _DAL.ReadAllBytes(fileName))
             {
-                result.Append(dataPiece.ToString());
+                result.Append(Convert.ToString(dataPiece, 2));
             }
 
             return result.ToString();

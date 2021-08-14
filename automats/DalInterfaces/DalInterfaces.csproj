@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="IAutomatChainModellingDAL.cs" />
     <Compile Include="IDataProvider.cs" />
+    <Compile Include="IStrengthTestDataTransmitterDAL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
