@@ -12,7 +12,7 @@ namespace BLInterfaces
 
         ModellingStepData ParseModellingStepResult(List<AutomatConfiguration> data, int stepNumber);
 
-        Task<StrengthTestResultMarks> StartTest(Automat automat, string inputString, List<string> inputSignalsAlphabet);
+        StrengthTestResultMarks StartTest(Automat automat, string inputString, List<string> inputSignalsAlphabet);
 
         bool SaveExecutionData(ModellingStepData firstStep, ModellingStepData secondStep);
 

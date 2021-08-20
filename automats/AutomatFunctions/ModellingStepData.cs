@@ -19,5 +19,11 @@
 
             StepNumber = stepNumber;
         }
+
+        public static bool operator <(ModellingStepData data1, ModellingStepData data2)
+            => data1.OutputSignals < data2.OutputSignals;
+
+        public static bool operator >(ModellingStepData data1, ModellingStepData data2)
+    => data1.OutputSignals > data2.OutputSignals;
     }
 }

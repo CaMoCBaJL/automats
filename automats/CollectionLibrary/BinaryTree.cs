@@ -33,7 +33,7 @@ namespace CommonCollections
             }
             else
             {
-                cicleCondition =  _storage[stepData.OutputSignals];
+                cicleCondition = _storage[stepData.OutputSignals];
 
                 _storage[stepData.OutputSignals] = stepData;
 
@@ -49,19 +49,17 @@ namespace CommonCollections
 
         int BinarySearch(int elementOutputSignals)
         {
-            int n = _storage.Count - 1;
+            int n = _storage.Count;
 
             int step = n / 2;
 
             n -= step;
 
-            while (step != 1)
+            if (_storage.Count == 0)
+                return 0;
+
+            while (step > 0)
             {
-                if (_storage.Count == 0)
-                    return 0;
-
-                step = step / 2 + step % 2;
-
                 if (_storage[n].OutputSignals == elementOutputSignals)
                     return -n;
 
@@ -69,12 +67,45 @@ namespace CommonCollections
                     n -= step;
                 else
                     n += step;
+
+                step = step / 2;
             }
 
-            if (_storage[n].OutputSignals > elementOutputSignals)
-                return n - 1;
+            return LastComparison(n, elementOutputSignals);
+        }
+
+        int LastComparison(int transitionalValue, int newValue)
+        {
+
+            if (transitionalValue == 0)
+                return RightComparison(transitionalValue, newValue);
+
+            else if (transitionalValue == _storage.Count)
+                return LeftComparison(transitionalValue, newValue);
+
             else
-                return n + 1;
+            {
+                if (RightComparison(transitionalValue, newValue) == transitionalValue)
+                    return LeftComparison(transitionalValue, newValue);
+
+                return RightComparison(transitionalValue, newValue);
+            }
+        }
+
+        int LeftComparison(int n, int newValue)
+        {
+            if (_storage[n - 1].OutputSignals > newValue)
+                return n - 1;
+
+            return n;
+        }
+
+        int RightComparison(int n, int newValue)
+        {
+            if (_storage[n + 1].OutputSignals > newValue)
+                return n;
+
+            return n + 1;
         }
     }
 }

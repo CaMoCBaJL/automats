@@ -41,7 +41,7 @@ namespace BuisnessLogic
         {
             int result = 0;
 
-            int maxDegree = (int)Math.Pow(2, data.Count);
+            int maxDegree = (int)Math.Pow(2, data.Count - 1);
 
             foreach (var item in data)
             {
@@ -54,9 +54,17 @@ namespace BuisnessLogic
             return result;
         }
 
-        public async Task<StrengthTestResultMarks> StartTest(Automat automat, string inputString, List<string> inputSignalsAlphabet)
-            => await Task.Run(() => StrengthTest(automat, inputString, inputSignalsAlphabet));
-
+        public StrengthTestResultMarks StartTest(Automat automat, string inputString, List<string> inputSignalsAlphabet)
+        { /*await Task.Run(() =>*/
+            try
+            {
+                return StrengthTest(automat, inputString, inputSignalsAlphabet);
+            }
+            catch (Exception ex)
+            {
+                return StrengthTestResultMarks.None;
+            }
+        }
         StrengthTestResultMarks StrengthTest(Automat automat, string inputString, List<string> inputSignalsAlphabet)
         {
             var cycles = new Dictionary<ModellingStepData, ModellingStepData>();
