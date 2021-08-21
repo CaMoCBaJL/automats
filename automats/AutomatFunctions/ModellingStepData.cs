@@ -1,29 +1,23 @@
-﻿namespace Entities
+﻿using Newtonsoft.Json;
+
+namespace Entities
 {
     public class ModellingStepData
     {
-        public string Conditions { get; }
+        [JsonProperty]
+        public string Conditions { get; private set; }
 
-        public int OutputSignals { get; }
-
-        public int StepNumber { get; }
+        [JsonProperty]
+        public int StepNumber { get; private set; }
 
 
         public ModellingStepData() { }
 
-        public ModellingStepData(string conditions, int outputSignals, int stepNumber)
+        public ModellingStepData(string conditions, int stepNumber)
         {
             Conditions = conditions;
 
-            OutputSignals = outputSignals;
-
             StepNumber = stepNumber;
         }
-
-        public static bool operator <(ModellingStepData data1, ModellingStepData data2)
-            => data1.OutputSignals < data2.OutputSignals;
-
-        public static bool operator >(ModellingStepData data1, ModellingStepData data2)
-    => data1.OutputSignals > data2.OutputSignals;
     }
 }

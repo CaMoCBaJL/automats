@@ -9,6 +9,9 @@ namespace DataAccessLayer
 {
     public class CryptoStrengthTestDAL : ICryptoStrengthTestDataTransmitterDAL
     {
+        private readonly object locker = new object();
+
+
         public CryptoStrengthTestDAL()
         => CheckDataFolderIntegrity();
 
@@ -18,8 +21,12 @@ namespace DataAccessLayer
 
             try
             {
-                File.WriteAllText(PathConstants.stengthTestDataFolder + Path.DirectorySeparatorChar + fileName,
-                    JsonConvert.SerializeObject(new ModellingStepData[] { firstStep, lastStep }));
+                lock (locker)
+                {
+                    File.WriteAllText(PathConstants.stengthTestDataFolder + Path.DirectorySeparatorChar + fileName,
+                        JsonConvert.SerializeObject(new KeyValuePair<ModellingStepData, ModellingStepData>
+                        (firstStep, lastStep)));
+                }
 
                 return true;
             }
@@ -29,7 +36,7 @@ namespace DataAccessLayer
             }
         }
 
-        void CheckDataFolderIntegrity()
+        public void CheckDataFolderIntegrity()
         {
             if (!Directory.Exists(PathConstants.stengthTestDataFolder))
                 Directory.CreateDirectory(PathConstants.stengthTestDataFolder);
@@ -37,8 +44,8 @@ namespace DataAccessLayer
 
         public void EndCryptoStrengthTest()
         {
-            if (!Directory.Exists(PathConstants.stengthTestDataFolder))
-                Directory.Delete(PathConstants.stengthTestDataFolder);
+            if (Directory.Exists(PathConstants.stengthTestDataFolder))
+                Directory.Delete(PathConstants.stengthTestDataFolder, true);
         }
 
         public Dictionary<ModellingStepData, ModellingStepData> LoadExecutionData()
@@ -47,12 +54,16 @@ namespace DataAccessLayer
 
             foreach (var fileName in Directory.GetFiles(PathConstants.stengthTestDataFolder))
             {
-                var cycleSteps = JsonConvert.DeserializeObject<KeyValuePair<ModellingStepData, ModellingStepData>>(File.ReadAllText(fileName));
+                var cycleSteps = JsonConvert.DeserializeObject<KeyValuePair<ModellingStepData, ModellingStepData>>
+                    (File.ReadAllText(fileName));
 
                 dataToShow.Add(cycleSteps.Key, cycleSteps.Value);
             }
 
             return dataToShow;
         }
+
+        public KeyValuePair<ModellingStepData, ModellingStepData> LoadNewCycleData(string pathToFile)
+        => JsonConvert.DeserializeObject<KeyValuePair<ModellingStepData, ModellingStepData>>(File.ReadAllText(pathToFile));
     }
 }

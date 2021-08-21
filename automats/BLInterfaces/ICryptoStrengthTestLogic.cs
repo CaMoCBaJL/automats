@@ -10,9 +10,15 @@ namespace BLInterfaces
 
         StrengthTestResultMarks MarkTestResult(Dictionary<ModellingStepData, ModellingStepData> cyclesData, string inputString);
 
-        ModellingStepData ParseModellingStepResult(List<AutomatConfiguration> data, int stepNumber);
+        KeyValuePair<int, ModellingStepData> ParseModellingStepResult(List<AutomatConfiguration> data, int stepNumber);
 
-        StrengthTestResultMarks StartTest(Automat automat, string inputString, List<string> inputSignalsAlphabet);
+        void CheckTestDataStorageExistence();
+
+        void EndTest();
+
+        KeyValuePair<ModellingStepData, ModellingStepData> LoadNewCycleData(string pathToData);
+
+        Task<StrengthTestResultMarks> StartTest(Automat automat, string inputString, List<string> inputSignalsAlphabet);
 
         bool SaveExecutionData(ModellingStepData firstStep, ModellingStepData secondStep);
 

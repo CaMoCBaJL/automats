@@ -4,21 +4,25 @@ using System.Windows.Forms;
 using Dependencies;
 using Entities;
 using CommonConstants;
-using System.Linq;
 using CommonLogic;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace PresentationLayer
 {
     public partial class StrengthTestResults : Form
     {
+        int labelCounter;
+
         Automat CurrentAutomat { get; }
 
         string InputString { get; }
 
-        Dictionary<ModellingStepData, ModellingStepData> cryptoStrengthTestData;
 
         public StrengthTestResults(Automat automat, string inputString)
         {
+            labelCounter = 0;
+
             CurrentAutomat = automat;
 
             InputString = inputString;
@@ -30,39 +34,59 @@ namespace PresentationLayer
         {
             fileSystemWatcher.Path = PathConstants.stengthTestDataFolder;
 
-            DependencyResolver.Instance.BinaryCryptoStrengthTest.StartTest(CurrentAutomat, InputString, new List<string>(new string[] { "0", "1" }));
+            DependencyResolver.Instance.BinaryCryptoStrengthTest.StartTest(CurrentAutomat, InputString,
+                new List<string>(new string[] { "0", "1" }));
         }
 
-        void fileSystemWatcher_Created(object sender, System.IO.FileSystemEventArgs e)
+        async void fileSystemWatcher_Created(object sender, System.IO.FileSystemEventArgs e)
         {
-            testProgressBar.Value = DependencyResolver.Instance.BinaryCryptoStrengthTest.GetExecutionStep() / InputString.Length;
-
-            foreach (var pair in DependencyResolver.Instance.BinaryCryptoStrengthTest.LoadExecutionData())
+            await Task.Run(() =>
             {
-                if (!cryptoStrengthTestData.Contains(pair))
-                {
-                    ShowCycle(pair);
+                testProgressBar.Value = (DependencyResolver.Instance.BinaryCryptoStrengthTest.GetExecutionStep()
+                    / InputString.Length) * 100;
 
-                    cryptoStrengthTestData.Add(pair.Key, pair.Value);
-                }
-            }
+                labelCounter++;
+
+                ShowCycle(DependencyResolver.Instance.BinaryCryptoStrengthTest.LoadNewCycleData(e.FullPath),
+                    labelCounter);
+            });
         }
 
-        void ShowCycle(KeyValuePair<ModellingStepData, ModellingStepData> pair)
+        void ShowCycle(KeyValuePair<ModellingStepData, ModellingStepData> pair, int cycleNum)
         {
             string labelText;
 
             if (pair.Value.StepNumber - pair.Key.StepNumber < IntegerConstants.outputStringMaxLength)
                 labelText = InputString.Substring(pair.Key.StepNumber, pair.Value.StepNumber - pair.Key.StepNumber);
             else
-                labelText = InputString.Substring(pair.Key.StepNumber, IntegerConstants.outputStringMaxLength) + StringConstants.threeDots;
+                labelText = InputString.Substring(pair.Key.StepNumber, IntegerConstants.outputStringMaxLength)
+                    + StringConstants.threeDots;
 
-            Controls.Add(new Label()
+            messagePanel.Invoke(new Action(() =>
             {
-                Location = DrawingLogic.CycleInfoLocation(cryptoStrengthTestData.Count + 1),
+                messagePanel.Controls.Add(new Label()
+                {
+                    Location = DrawingLogic.CycleInfoLocation(cycleNum),
 
-                Text = StringConstants.threeDots + labelText
-            }); 
+                    Text = ConstructLabelText(StringConstants.threeDots + labelText, pair.Key.StepNumber,
+                    pair.Value.StepNumber),
+
+                    AutoSize = true
+                });
+
+                messagePanel.Update();
+            }));
+        }
+
+        string ConstructLabelText(string labelText, int firstStep, int secondStep)
+            => new StringBuilder(StringConstants.cycleInfoFirstPart + firstStep +
+                StringConstants.cycleInfoSecondPart +
+                secondStep + StringConstants.cycleInfoThirdPart + Environment.NewLine +
+                StringConstants.cycleInfoForthPart + labelText).ToString();
+
+        private void StrengthTestResults_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            DependencyResolver.Instance.BinaryCryptoStrengthTest.EndTest();
         }
     }
 }

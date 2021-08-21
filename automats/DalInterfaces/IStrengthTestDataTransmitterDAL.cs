@@ -10,5 +10,9 @@ namespace DalInterfaces
         void EndCryptoStrengthTest();
 
         Dictionary<ModellingStepData, ModellingStepData> LoadExecutionData();
+
+        void CheckDataFolderIntegrity();
+
+        KeyValuePair<ModellingStepData,  ModellingStepData> LoadNewCycleData(string pathToFile);
     }
 }

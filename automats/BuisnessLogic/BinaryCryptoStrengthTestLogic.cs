@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using BLInterfaces;
 using Entities;
-using CommonCollections;
 using System.Text;
 using DataAccessLayer;
-using System.Threading.Tasks;
 using DalInterfaces;
+using System.Threading.Tasks;
 
 namespace BuisnessLogic
 {
@@ -22,8 +21,8 @@ namespace BuisnessLogic
         public string ParseInputData(string fileName)
             => new DataProvidingLogic(new DataIntegrityDAL()).ReadAllBytesFromFile(fileName);
 
-        public ModellingStepData ParseModellingStepResult(List<AutomatConfiguration> data, int stepNumber)
-            => new ModellingStepData(ParseCondtions(data), ParseOutputSignals(data), stepNumber);
+        public KeyValuePair<int, ModellingStepData> ParseModellingStepResult(List<AutomatConfiguration> data, int stepNumber)
+            => new KeyValuePair<int, ModellingStepData>(ParseOutputSignals(data), new ModellingStepData(ParseCondtions(data), stepNumber));
 
         string ParseCondtions(List<AutomatConfiguration> data)
         {
@@ -54,22 +53,18 @@ namespace BuisnessLogic
             return result;
         }
 
-        public StrengthTestResultMarks StartTest(Automat automat, string inputString, List<string> inputSignalsAlphabet)
-        { /*await Task.Run(() =>*/
-            try
-            {
-                return StrengthTest(automat, inputString, inputSignalsAlphabet);
-            }
-            catch (Exception ex)
-            {
-                return StrengthTestResultMarks.None;
-            }
+        public async Task<StrengthTestResultMarks> StartTest(Automat automat, string inputString, List<string> inputSignalsAlphabet)
+        {
+            var result = await Task.Run(() => StrengthTest(automat, inputString, inputSignalsAlphabet));
+
+            return result;
         }
+
         StrengthTestResultMarks StrengthTest(Automat automat, string inputString, List<string> inputSignalsAlphabet)
         {
             var cycles = new Dictionary<ModellingStepData, ModellingStepData>();
 
-            var modellingStepsStorage = new BinaryTree();
+            var modellingStepsStorage = new SortedList<int, ModellingStepData>();
 
             List<int> conditions = ModellingLogic.GetDistinctStartConditionsSet(automat);
 
@@ -85,8 +80,21 @@ namespace BuisnessLogic
                         inputSignalsAlphabet.IndexOf(inputString.Substring(i, 1))));
                 }
 
-                if (!modellingStepsStorage.Add(ParseModellingStepResult(modellingStep, i), out ModellingStepData cicle))
-                    cycles.Add(cicle, ParseModellingStepResult(modellingStep, i));
+                var newData = ParseModellingStepResult(modellingStep, i);
+
+                if (modellingStepsStorage.ContainsKey(newData.Key))
+                {
+                    if (modellingStepsStorage[newData.Key].Conditions == newData.Value.Conditions)
+                    {
+                        cycles.Add(modellingStepsStorage[newData.Key], newData.Value);
+
+                        _DAL.SaveExecutionData(modellingStepsStorage[newData.Key], newData.Value);
+                    }
+
+                    modellingStepsStorage.Remove(newData.Key);
+                }
+
+                modellingStepsStorage.Add(newData.Key, newData.Value);
 
                 conditions = UpdateConditionList(modellingStep);
             }
@@ -138,12 +146,21 @@ namespace BuisnessLogic
         }
 
         public bool SaveExecutionData(ModellingStepData firstStep, ModellingStepData secondStep)
-        =>  _DAL.SaveExecutionData(firstStep, secondStep);
+        => _DAL.SaveExecutionData(firstStep, secondStep);
 
         public Dictionary<ModellingStepData, ModellingStepData> LoadExecutionData()
         => _DAL.LoadExecutionData();
 
+        public KeyValuePair<ModellingStepData, ModellingStepData> LoadNewCycleData(string pathTofile)
+            => _DAL.LoadNewCycleData(pathTofile);
+
         public int GetExecutionStep()
         => ExecutionStep;
+
+        public void CheckTestDataStorageExistence()
+        => _DAL.CheckDataFolderIntegrity();
+
+        public void EndTest()
+        => _DAL.EndCryptoStrengthTest();
     }
 }

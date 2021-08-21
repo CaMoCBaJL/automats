@@ -32,6 +32,8 @@ namespace PresentationLayer
         
         private void testStart_Click(object sender, EventArgs e)
         {
+            DependencyResolver.Instance.BinaryCryptoStrengthTest.CheckTestDataStorageExistence();
+
             new StrengthTestResults(CurrentAutomat, DependencyResolver.Instance.BinaryCryptoStrengthTest.ParseInputData(AutomatStrengthTestInputString)).Show();
         }
     }
