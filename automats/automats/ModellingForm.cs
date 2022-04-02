@@ -4,6 +4,8 @@ using System.Linq;
 using System.Windows.Forms;
 using Entities;
 using Dependencies;
+using BLInterfaces;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace PresentationLayer
 {
@@ -11,6 +13,21 @@ namespace PresentationLayer
     {
         string AutomatName { get; set; }
 
+        static IAutomatModellingLogic modellingLogicService;
+
+        static IDataProviderLogic dataProviderLogicService;
+
+        static IAutomatChainModellingLogic automatChainModellingService;
+
+
+        static ModellingForm()
+        {
+            modellingLogicService = DependencyResolver.Instance.ServiceProvider.GetService<IAutomatModellingLogic>();
+
+            dataProviderLogicService = DependencyResolver.Instance.ServiceProvider.GetService<IDataProviderLogic>();
+
+            automatChainModellingService = DependencyResolver.Instance.ServiceProvider.GetService<IAutomatChainModellingLogic>();
+        }
 
         public ModellingForm()
         {
@@ -58,15 +75,15 @@ namespace PresentationLayer
                         if (!string.IsNullOrEmpty(textBox1.Text.Trim()))
                             int.TryParse(textBox1.Text, out iterCounter);
 
-                        var data = DependencyResolver.Instance.AutomatModellingBL.ModelTheAutomatWork(
-                            DependencyResolver.Instance.AutomatModellingBL.GetDistinctStartConditionsSet(startConditionsTextBox.Text),
+                        var data = modellingLogicService.ModelTheAutomatWork(
+                            modellingLogicService.GetDistinctStartConditionsSet(startConditionsTextBox.Text),
                             inputSignalsTextBox.Text.Split(SplitTemplates.spaceToSplit, StringSplitOptions.RemoveEmptyEntries).ToList(),
                             CurrentAutomat, iterCounter);
 
-                        if (!DependencyResolver.Instance.BL.AddAutomatData(InputFileName,
-                            DependencyResolver.Instance.AutomatModellingBL.CalculateInputSignals(inputSignalsTextBox.Text),
-                            DependencyResolver.Instance.AutomatModellingBL.CalculateOutputSignals(data), AutomatName,
-                            DependencyResolver.Instance.AutomatModellingBL.CalculateStartConditions(data)))
+                        if (!dataProviderLogicService.AddAutomatData(InputFileName,
+                            modellingLogicService.CalculateInputSignals(inputSignalsTextBox.Text),
+                            modellingLogicService.CalculateOutputSignals(data), AutomatName,
+                            modellingLogicService.CalculateStartConditions(data)))
                             MessageBox.Show(StringIndicators.savingError);
 
                         new DataVisualization(data, ExecutionType.Modeling).Show();
@@ -97,21 +114,21 @@ namespace PresentationLayer
         {
             if (!string.IsNullOrEmpty(AutomatName))
             {
-                if (DependencyResolver.Instance.ChainModellingBL.DidAutomatWork(AutomatName))
+                if (automatChainModellingService.DidAutomatWork(AutomatName))
                 {
-                    var data = DependencyResolver.Instance.BL.LoadAutomatSettings(AutomatName);
+                    var data = dataProviderLogicService.LoadAutomatSettings(AutomatName);
 
                     inputSignalsTextBox.Text = data.InputSignalString;
 
                     startConditionsTextBox.Text = data.StartConditionSet;
 
-                    CurrentAutomat = DependencyResolver.Instance.BL.ParseAutomatDataTables(data.AutomatDataFile);
+                    CurrentAutomat = dataProviderLogicService.ParseAutomatDataTables(data.AutomatDataFile);
 
                     UpdateUserInterface(CurrentAutomat);
                 }
 
-                if (DependencyResolver.Instance.ChainModellingBL.GetAutomatGroup(AutomatName) > 1)
-                    inputSignalsTextBox.Text = DependencyResolver.Instance.ChainModellingBL.CalculateAutomatInputSignals(AutomatName);
+                if (automatChainModellingService.GetAutomatGroup(AutomatName) > 1)
+                    inputSignalsTextBox.Text = automatChainModellingService.CalculateAutomatInputSignals(AutomatName);
             }
         }
     }

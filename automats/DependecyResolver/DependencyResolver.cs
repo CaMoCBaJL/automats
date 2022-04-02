@@ -2,6 +2,7 @@
 using DalInterfaces;
 using BLInterfaces;
 using BuisnessLogic;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Dependencies
 {
@@ -9,6 +10,23 @@ namespace Dependencies
     {
         #region Singleton
         private static DependencyResolver _instance;
+
+        private DependencyResolver()
+        {
+            ServiceCollection services = new ServiceCollection();
+
+            services.AddSingleton(typeof(IAutomatChainModellingLogic), new AutomatChainModellingLogic(modellingDAL));
+
+            services.AddSingleton(typeof(IDataProviderLogic), new DataProvidingLogic(dataIntegrityDAL));
+
+            services.AddSingleton(typeof(IAutomatExperimentLogic), new ExperimentLogic());
+
+            services.AddSingleton(typeof(IAutomatModellingLogic), new ModellingLogic());
+
+            services.AddSingleton(typeof(ICryptoStrengthTestLogic), new BinaryCryptoStrengthTestLogic(cryptoStrengthTestDAL));
+
+            ServiceProvider = services.BuildServiceProvider();
+        }
 
         public static DependencyResolver Instance
         {
@@ -22,21 +40,12 @@ namespace Dependencies
         }
         #endregion
 
-
         ICryptoStrengthTestDataTransmitterDAL cryptoStrengthTestDAL = new CryptoStrengthTestDAL();
 
-        IDataProvider DAL => new DataIntegrityDAL();
+        IDataProvider dataIntegrityDAL => new DataIntegrityDAL();
 
-        IAutomatChainModellingDAL ModellingDAL => new AutomatChainModellingDAL();
+        IAutomatChainModellingDAL modellingDAL => new AutomatChainModellingDAL();
 
-        public IDataProviderLogic BL => new DataProvidingLogic(DAL);
-
-        public IAutomatChainModellingLogic ChainModellingBL => new AutomatChainModellingLogic(ModellingDAL);
-
-        public IAutomatModellingLogic AutomatModellingBL => new ModellingLogic();
-
-        public IAutomatExperimentLogic AutomatExperimentLogic => new ExperimentLogic();
-
-        public ICryptoStrengthTestLogic BinaryCryptoStrengthTest => new BinaryCryptoStrengthTestLogic(cryptoStrengthTestDAL);
+        public ServiceProvider ServiceProvider;
     }
 }

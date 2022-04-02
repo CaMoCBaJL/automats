@@ -7,17 +7,26 @@ using CommonConstants;
 using CommonLogic;
 using System.Text;
 using System.Threading.Tasks;
+using BLInterfaces;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace PresentationLayer
 {
     public partial class StrengthTestResults : Form
     {
+        static ICryptoStrengthTestLogic cryptoStrengthTestLogicService;
+
         int labelCounter;
 
         Automat CurrentAutomat { get; }
 
         string InputString { get; }
 
+
+        static StrengthTestResults()
+        {
+            cryptoStrengthTestLogicService = DependencyResolver.Instance.ServiceProvider.GetService<ICryptoStrengthTestLogic>();
+        }
 
         public StrengthTestResults(Automat automat, string inputString)
         {
@@ -34,7 +43,7 @@ namespace PresentationLayer
         {
             fileSystemWatcher.Path = PathConstants.stengthTestDataFolder;
 
-            DependencyResolver.Instance.BinaryCryptoStrengthTest.StartTest(CurrentAutomat, InputString,
+            cryptoStrengthTestLogicService.StartTest(CurrentAutomat, InputString,
                 new List<string>(new string[] { "0", "1" }));
         }
 
@@ -42,12 +51,12 @@ namespace PresentationLayer
         {
             await Task.Run(() =>
             {
-                testProgressBar.Value = (DependencyResolver.Instance.BinaryCryptoStrengthTest.GetExecutionStep()
+                testProgressBar.Value = (cryptoStrengthTestLogicService.GetExecutionStep()
                     / InputString.Length) * 100;
 
                 labelCounter++;
 
-                ShowCycle(DependencyResolver.Instance.BinaryCryptoStrengthTest.LoadNewCycleData(e.FullPath),
+                ShowCycle(cryptoStrengthTestLogicService.LoadNewCycleData(e.FullPath),
                     labelCounter);
             });
         }
@@ -86,7 +95,7 @@ namespace PresentationLayer
 
         private void StrengthTestResults_FormClosed(object sender, FormClosedEventArgs e)
         {
-            DependencyResolver.Instance.BinaryCryptoStrengthTest.EndTest();
+            cryptoStrengthTestLogicService.EndTest();
         }
     }
 }

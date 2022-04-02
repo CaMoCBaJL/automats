@@ -5,14 +5,24 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using Dependencies;
+using BLInterfaces;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace PresentationLayer
 {
     public partial class InputAutomat : Form
     {
+        static IDataProviderLogic dataProviderService;
+
         protected Automat CurrentAutomat { get; set; }
 
         protected string InputFileName { get; set; }
+
+
+        static InputAutomat()
+        {
+            dataProviderService = DependencyResolver.Instance.ServiceProvider.GetService<IDataProviderLogic>();
+        }
 
         public InputAutomat()
         {
@@ -29,7 +39,7 @@ namespace PresentationLayer
             {
                 InputFileName = k.FileName;
 
-                CurrentAutomat = DependencyResolver.Instance.BL.ParseAutomatDataTables(InputFileName);
+                CurrentAutomat = dataProviderService.ParseAutomatDataTables(InputFileName);
 
                 UpdateUserInterface(CurrentAutomat);
             }

@@ -8,11 +8,15 @@ using DataValidation;
 using System.Text;
 using CommonConstants;
 using System.Linq;
+using BLInterfaces;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace PresentationLayer
 {
     public partial class AutomatChainModellingForm : Form
     {
+        static IAutomatChainModellingLogic automatChainModellingService;
+
         bool status = false;
 
         Graphics globalGraphics;
@@ -23,6 +27,11 @@ namespace PresentationLayer
 
         public const int offset = 40;
 
+
+        static AutomatChainModellingForm()
+        {
+            automatChainModellingService = DependencyResolver.Instance.ServiceProvider.GetService<IAutomatChainModellingLogic>();
+        }
 
         public AutomatChainModellingForm()
         {
@@ -35,14 +44,14 @@ namespace PresentationLayer
         {
             status = false;
 
-            DependencyResolver.Instance.ChainModellingBL.SaveAutomatChainAppearance(GetLabelData());
+            automatChainModellingService.SaveAutomatChainAppearance(GetLabelData());
 
             Refresh();
         }
 
         void LabelsAreParallel()
         {
-            var groups = DependencyResolver.Instance.ChainModellingBL.LoadAutomatGroups();
+            var groups = automatChainModellingService.LoadAutomatGroups();
 
             var drawer = new DrawingLogic();
 
@@ -68,7 +77,7 @@ namespace PresentationLayer
 
         void LabelMouseDoubleClick(object sender, MouseEventArgs e)
         {
-            DependencyResolver.Instance.ChainModellingBL.SaveAutomatChainAppearance(GetLabelData());
+            automatChainModellingService.SaveAutomatChainAppearance(GetLabelData());
 
             AutomatModelling(sender as Label);
         }
@@ -91,8 +100,8 @@ namespace PresentationLayer
 
         void AutomatModelling(Label automat)
         {
-            if (DependencyResolver.Instance.ChainModellingBL.DidAllPreviousGroupsWork(
-                DependencyResolver.Instance.ChainModellingBL.GetAutomatGroup(automat.Text)).ValidationPassed())
+            if (automatChainModellingService.DidAllPreviousGroupsWork(
+                automatChainModellingService.GetAutomatGroup(automat.Text)).ValidationPassed())
             {
                 this.Hide();
 
@@ -130,11 +139,11 @@ namespace PresentationLayer
 
             globalGraphics = pictureBox1.CreateGraphics();
 
-            if (!DependencyResolver.Instance.ChainModellingBL.IsChainModellingModeActive())
-                DependencyResolver.Instance.ChainModellingBL.StartAutomatChainModelling();
+            if (!automatChainModellingService.IsChainModellingModeActive())
+                automatChainModellingService.StartAutomatChainModelling();
             else
             {
-                var chainData = DependencyResolver.Instance.ChainModellingBL.LoadAutomatChainAppearance();
+                var chainData = automatChainModellingService.LoadAutomatChainAppearance();
 
                 if (chainData.Count > 0)
                     FillTheScreen(chainData);
@@ -148,7 +157,7 @@ namespace PresentationLayer
                 AddAutomat(item.Key, item.Value);
             }
 
-            DependencyResolver.Instance.ChainModellingBL.SaveAutomatChainAppearance(GetLabelData());
+            automatChainModellingService.SaveAutomatChainAppearance(GetLabelData());
         }
 
         void AddAutomat(string automatName, Point labelLocation)
@@ -168,22 +177,22 @@ namespace PresentationLayer
             Controls.Add(l1);
             l1.BringToFront();
 
-            if (!DependencyResolver.Instance.ChainModellingBL.LoadAutomatChainAppearance().Keys.Contains(automatName))
-                DependencyResolver.Instance.ChainModellingBL.SaveAutomatChainAppearance(GetLabelData());
+            if (!automatChainModellingService.LoadAutomatChainAppearance().Keys.Contains(automatName))
+                automatChainModellingService.SaveAutomatChainAppearance(GetLabelData());
         }
 
         void AddToolTip(string automatName, Label automatLabel)
         {
             StringBuilder tooltipText = new StringBuilder();
 
-            if (DependencyResolver.Instance.ChainModellingBL.DidAutomatWork(automatName))
+            if (automatChainModellingService.DidAutomatWork(automatName))
                 tooltipText.Append(StringIndicators.automatWorked + Environment.NewLine);
             else
             {
                 tooltipText.Append(automatName + StringIndicators.automatNotWorked + Environment.NewLine);
 
-                if (DependencyResolver.Instance.ChainModellingBL.DidAllPreviousGroupsWork(
-                    DependencyResolver.Instance.ChainModellingBL.GetAutomatGroup(automatName)).ValidationPassed())
+                if (automatChainModellingService.DidAllPreviousGroupsWork(
+                    automatChainModellingService.GetAutomatGroup(automatName)).ValidationPassed())
                     tooltipText.Append(StringIndicators.previousGroupWorked);
                 else
                     tooltipText.Append(StringIndicators.previousGroupNotWorked);
@@ -198,13 +207,13 @@ namespace PresentationLayer
         {
             globalGraphics = e.Graphics;
 
-            DependencyResolver.Instance.ChainModellingBL.SaveAutomatChainAppearance(GetLabelData());
+            automatChainModellingService.SaveAutomatChainAppearance(GetLabelData());
 
             LabelsAreParallel();
         }
 
         private void addAutomatButtonClick(object sender, EventArgs e)
-        => AddAutomat("A" + (DependencyResolver.Instance.ChainModellingBL.LoadAutomatChainAppearance().Count + 1), new Point(100, 100));
+        => AddAutomat("A" + (automatChainModellingService.LoadAutomatChainAppearance().Count + 1), new Point(100, 100));
 
     }
 }

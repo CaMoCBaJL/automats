@@ -1,13 +1,23 @@
 ﻿using System;
 using System.Windows.Forms;
 using Dependencies;
+using BLInterfaces;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace PresentationLayer
 {
     public partial class AutomatCryptoStrengthTestForm : InputAutomat
     {
+        static ICryptoStrengthTestLogic cryptoStrengthTestLogicService;
+
         string AutomatStrengthTestInputString { get; set; }
 
+
+        static AutomatCryptoStrengthTestForm()
+        {
+            cryptoStrengthTestLogicService = DependencyResolver.Instance.ServiceProvider.GetService<ICryptoStrengthTestLogic>();
+        }
+        
         public AutomatCryptoStrengthTestForm()
         {
             InitializeComponent();
@@ -21,7 +31,7 @@ namespace PresentationLayer
             {
                 AutomatStrengthTestInputString = k.FileName;
 
-                strengthTestInputString.Text =  DependencyResolver.Instance.BinaryCryptoStrengthTest.ParseInputData(AutomatStrengthTestInputString);
+                strengthTestInputString.Text =  cryptoStrengthTestLogicService.ParseInputData(AutomatStrengthTestInputString);
             }
         }
 
@@ -32,9 +42,9 @@ namespace PresentationLayer
         
         private void testStart_Click(object sender, EventArgs e)
         {
-            DependencyResolver.Instance.BinaryCryptoStrengthTest.CheckTestDataStorageExistence();
+            cryptoStrengthTestLogicService.CheckTestDataStorageExistence();
 
-            new StrengthTestResults(CurrentAutomat, DependencyResolver.Instance.BinaryCryptoStrengthTest.ParseInputData(AutomatStrengthTestInputString)).Show();
+            new StrengthTestResults(CurrentAutomat, cryptoStrengthTestLogicService.ParseInputData(AutomatStrengthTestInputString)).Show();
         }
     }
 }

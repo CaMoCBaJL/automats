@@ -2,11 +2,21 @@
 using System.Windows.Forms;
 using CommonConstants;
 using Dependencies;
+using BLInterfaces;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace PresentationLayer
 {
     public partial class Menu : Form
     {
+        static IAutomatChainModellingLogic automatChainModellingLogicService;
+
+
+        static Menu()
+        {
+            automatChainModellingLogicService = DependencyResolver.Instance.ServiceProvider.GetService<IAutomatChainModellingLogic>();
+        }
+
         public Menu()
         {
             InitializeComponent();
@@ -16,22 +26,21 @@ namespace PresentationLayer
         {
             this.Hide();
             new ModellingForm().Show();
-
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
             this.Hide();
 
-            if (DependencyResolver.Instance.ChainModellingBL.IsChainModellingModeActive())
+            if (automatChainModellingLogicService.IsChainModellingModeActive())
             {
                 if (MessageBox.Show(StringIndicators.resumeTheWorkDialogue,
                 MessageBoxTitles.chooseAction, MessageBoxButtons.YesNo, MessageBoxIcon.Question)
                                     == DialogResult.No)
                 {
-                    DependencyResolver.Instance.ChainModellingBL.EndAutomatChainModelling();
+                    automatChainModellingLogicService.EndAutomatChainModelling();
 
-                    DependencyResolver.Instance.ChainModellingBL.StartAutomatChainModelling();
+                    automatChainModellingLogicService.StartAutomatChainModelling();
                 }
             }
 

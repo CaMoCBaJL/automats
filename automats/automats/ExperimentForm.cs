@@ -1,17 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using Entities;
-using CommonLogic;
+using BLInterfaces;
 using Dependencies;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace PresentationLayer
 {
     public partial class ExperimentForm : InputAutomat
     {
+        static IAutomatExperimentLogic automatExperimentLogicService;
+
+
+        static ExperimentForm()
+        {
+            automatExperimentLogicService = DependencyResolver.Instance.ServiceProvider.GetService<IAutomatExperimentLogic>();
+        }
+
         public ExperimentForm()
         {
             InitializeComponent();
@@ -67,7 +74,7 @@ namespace PresentationLayer
                         foreach (var item in startConditionsTextBox.Text.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries))
                             initialConditionsSet.Add(int.Parse(item));
 
-                        var data = DependencyResolver.Instance.AutomatExperimentLogic.StartTheExperiment(
+                        var data = automatExperimentLogicService.StartTheExperiment(
                            initialConditionsSet, CurrentAutomat.DeltaTable, CurrentAutomat.LambdaTable, experimentType);
 
                         new DataVisualization(data, ExecutionType.Experiment).Show();
